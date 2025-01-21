@@ -25,6 +25,8 @@ void Board::draw()
         [&]() {
             ImGui::ShowDemoWindow(); // This opens a window which shows tons of examples of what you can do with ImGui. You should check it out! Also, you can use the "Item Picker" in the top menu of that demo window: then click on any widget and it will show you the corresponding code directly in your IDE!
             ImGui::Begin("Example");
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
@@ -54,6 +56,7 @@ void Board::draw()
                     compteur_id++;
                 }
             }
+            ImGui::PopStyleVar(1);
             ImGui::End();
 
             // ImGui::SameLine(); // Draw the next ImGui widget on the same line as the previous one. Otherwise it would be below it
