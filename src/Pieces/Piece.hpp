@@ -1,8 +1,12 @@
+#include <iostream>
+
 class Piece {
 public:
-    void move();
+    virtual ~Piece() = default;
+    void                move();
+    virtual std::string label() = 0;
 
 private:
-    int  id;
-    bool camp;
+    int  id{};
+    bool camp{};
 };
