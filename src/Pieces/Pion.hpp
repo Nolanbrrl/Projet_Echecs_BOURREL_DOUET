@@ -3,7 +3,7 @@
 
 class Pion : public Piece {
 public:
-    virtual ~Pion() = default;
+    ~Pion() override = default;
     std::string label() override;
 
 private:

@@ -16,6 +16,16 @@ void Board::draw()
         {0, 1, 0, 1, 0, 1, 0, 1}
     };
 
+    std::string pieceMap[8][8]{
+        {"T", "C", "F", "Q", "K", "F", "C", "T"},
+        {"P", "P", "P", "P", "P", "P", "P", "P"},
+        {"", "", "", "", "", "", "", ""},
+        {"", "", "", "", "", "", "", ""},
+        {"", "", "", "", "", "", "", ""},
+        {"", "", "", "", "", "", "", ""},
+        {"P", "P", "P", "P", "P", "P", "P", "P"},
+        {"T", "C", "F", "K", "Q", "F", "C", "T"}
+    };
     float value{0.f};
     int   compteur_id = 0;
     quick_imgui::loop(
@@ -39,7 +49,7 @@ void Board::draw()
                     {
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.82f, 0.54f, 0.27f, 1.f}); // Changes the color of all buttons until we call ImGui::PopStyleColor(). There is also ImGuiCol_ButtonActive and ImGuiCol_ButtonHovered
                         ImGui::PushID(compteur_id);                                               // When some ImGui items have the same label (for exemple the next two buttons are labeled "Yo") ImGui needs you to specify an ID so that it can distinguish them. It can be an int, a pointer, a string, etc.                                                                  // You will definitely run into this when you create a button for each of your chess pieces, so remember to give them an ID!
-                        ImGui::Button("B", ImVec2{100.f, 100.f});
+                        ImGui::Button(pieceMap[i][j], ImVec2{100.f, 100.f});
                         ImGui::PopID(); // Then pop the id you pushed after you created the widget
                         ImGui::PopStyleColor();
                     }
