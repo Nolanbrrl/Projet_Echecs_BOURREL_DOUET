@@ -49,7 +49,7 @@ void Board::draw()
                     {
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.82f, 0.54f, 0.27f, 1.f}); // Changes the color of all buttons until we call ImGui::PopStyleColor(). There is also ImGuiCol_ButtonActive and ImGuiCol_ButtonHovered
                         ImGui::PushID(compteur_id);                                               // When some ImGui items have the same label (for exemple the next two buttons are labeled "Yo") ImGui needs you to specify an ID so that it can distinguish them. It can be an int, a pointer, a string, etc.                                                                  // You will definitely run into this when you create a button for each of your chess pieces, so remember to give them an ID!
-                        ImGui::Button(pieceMap[i][j], ImVec2{100.f, 100.f});
+                        ImGui::Button(pieceMap[i][j].c_str(), ImVec2{100.f, 100.f});
                         ImGui::PopID(); // Then pop the id you pushed after you created the widget
                         ImGui::PopStyleColor();
                     }
@@ -57,7 +57,7 @@ void Board::draw()
                     {
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1.f, 0.81f, 0.62f, 1.f});
                         ImGui::PushID(compteur_id);
-                        ImGui::Button("A", ImVec2{100.f, 100.f});
+                        ImGui::Button(pieceMap[i][j].c_str(), ImVec2{100.f, 100.f});
                         ImGui::PopID();
 
                         ImGui::PopStyleColor();
