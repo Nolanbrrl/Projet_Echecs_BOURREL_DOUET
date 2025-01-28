@@ -2,15 +2,12 @@
 
 class Tour : public Piece {
 public:
-    void        move();
-    std::string label = "T";
-    Color       getCamp()
-    {
-        return color;
-    };
-    bool setCamp();
+    Tour(Color color, std::string label);
+    ~Tour() override = default;
+    std::string label() override;
+
+    void move();
 
 private:
-    int   id{};
-    Color color{};
+    int id{};
 };

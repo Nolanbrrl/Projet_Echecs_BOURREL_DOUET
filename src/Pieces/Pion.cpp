@@ -2,7 +2,6 @@
 #include <iostream>
 #include "Board.hpp"
 
-
 static void move();
 
 std::string Pion::label()
