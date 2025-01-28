@@ -1,5 +1,7 @@
 #include "Pion.hpp"
 #include <iostream>
+#include "Board.hpp"
+
 
 static void move();
 
