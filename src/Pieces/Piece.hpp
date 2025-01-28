@@ -13,9 +13,7 @@ public:
     {
         return color;
     };
-    bool setCamp()
-    {
-    }
+    bool setCamp();
 
 private:
     int   id{};
