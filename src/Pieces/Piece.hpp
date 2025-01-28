@@ -1,20 +1,23 @@
 #include <iostream>
+enum class Color {
+    noir,
+    blanc
 
+};
 class Piece {
 public:
     virtual ~Piece() = default;
     void                move();
     virtual std::string label() = 0;
-    bool                getCamp()
+    Color               getCamp()
     {
-        return camp;
+        return color;
     };
     bool setCamp()
     {
-        // à voir
     }
 
 private:
-    int  id{};
-    bool camp{};
+    int   id{};
+    Color color{};
 };
