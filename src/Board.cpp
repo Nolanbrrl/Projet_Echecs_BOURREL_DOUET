@@ -1,13 +1,11 @@
 #include "Board.hpp"
 #include <imgui.h>
 #include <iostream>
-#include "Pieces/Piece.hpp"
 #include "quick_imgui/quick_imgui.hpp"
-
 
 Board::Board()
     : pieceMap{{
-          {Piece("T", Color::Noir), "C", "F", "Q", "K", "F", "C", "T"},
+          {"T", "C", "F", "Q", "K", "F", "C", "T"},
           {"P", "P", "P", "P", "P", "P", "P", "P"},
           {"", "", "", "", "", "", "", ""},
           {"", "", "", "", "", "", "", ""},
