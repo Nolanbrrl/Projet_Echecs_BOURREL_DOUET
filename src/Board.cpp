@@ -12,7 +12,7 @@ Board::Board()
           {"", "", "", "", "", "", "", ""},
           {"", "", "", "", "", "", "", ""},
           {"P", "P", "P", "P", "P", "P", "P", "P"},
-          {"T", "C", "F", "K", "Q", "F", "C", "T"} //
+          {"T", "C", "F", "K", "Q", "F", "C", "T"} // transformer ce tableau en tableau de pièce
       }}
 {}
 
