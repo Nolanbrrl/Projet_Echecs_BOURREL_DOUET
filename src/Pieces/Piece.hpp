@@ -5,6 +5,8 @@ enum class Color {
     blanc
 
 };
+
+class Board;
 class Piece {
 public:
     virtual ~Piece() = default;

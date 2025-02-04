@@ -1,7 +1,6 @@
 #include "Cavalier.hpp"
 #include <utility>
 #include "Board.hpp"
-#include "Piece.hpp"
 
 static void move();
 
