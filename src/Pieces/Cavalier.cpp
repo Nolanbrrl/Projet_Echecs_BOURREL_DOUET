@@ -24,3 +24,8 @@ Cavalier::Cavalier(Color color, std::string label)
     this->setColor(color);
     this->setLabel(label);
 };
+
+// bool Cavalier::isMovePossible(Board board)
+// {
+//     return true;
+// };

@@ -7,6 +7,7 @@ public:
     // ~Cavalier() override = default;
     void        setLabel(std::string label);
     std::string getLabel();
+    // bool        isMovePossible(Board board);
 
 private:
     std::string label() override;
