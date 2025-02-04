@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 enum class Color {
     noir,
@@ -9,11 +10,8 @@ public:
     virtual ~Piece() = default;
     void                move();
     virtual std::string label() = 0;
-    Color               getCamp()
-    {
-        return color;
-    };
-    bool setCamp();
+    Color               getColor();
+    void                setColor(Color color);
 
 private:
     int   id{};

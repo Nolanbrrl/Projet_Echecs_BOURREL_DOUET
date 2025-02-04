@@ -1,18 +1,27 @@
 #include "Board.hpp"
 #include <imgui.h>
 #include <iostream>
+#include <memory>
+#include "Pieces/Cavalier.hpp"
+#include "Pieces/Fou.hpp"
+#include "Pieces/Piece.hpp"
+#include "Pieces/Pion.hpp"
+#include "Pieces/Reine.hpp"
+#include "Pieces/Roi.hpp"
+#include "Pieces/Tour.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
 Board::Board()
     : pieceMap{{
-          {"T", "C", "F", "Q", "K", "F", "C", "T"},
-          {"P", "P", "P", "P", "P", "P", "P", "P"},
-          {"", "", "", "", "", "", "", ""},
-          {"", "", "", "", "", "", "", ""},
-          {"", "", "", "", "", "", "", ""},
-          {"", "", "", "", "", "", "", ""},
-          {"P", "P", "P", "P", "P", "P", "P", "P"},
-          {"T", "C", "F", "K", "Q", "F", "C", "T"} // transformer ce tableau en tableau de pièce
+          {std::make_unique<Tour>(Color::noir, "T"), std::make_unique<Cavalier>(Color::noir, "C"), std::make_unique<Fou>(Color::noir, "F"), std::make_unique<Reine>(Color::noir, "Q"), std::make_unique<Roi>(Color::noir, "K"), std::make_unique<Fou>(Color::noir, "F"), std::make_unique<Cavalier>(Color::noir, "C"), std::make_unique<Tour>(Color::noir, "T")},
+          {std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P")},
+          {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+          {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+          {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+          {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+          {std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P")},
+          {std::make_unique<Tour>(Color::blanc, "T"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Roi>(Color::blanc, "K"), std::make_unique<Reine>(Color::blanc, "Q"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Tour>(Color::blanc, "T")}
+          // tableau de piece
       }}
 {}
 
@@ -53,8 +62,17 @@ void Board::draw()
                     if (tileMap[i][j] == 0)
                     {
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.82f, 0.54f, 0.27f, 1.f}); // Changes the color of all buttons until we call ImGui::PopStyleColor(). There is also ImGuiCol_ButtonActive and ImGuiCol_ButtonHovered
-                        ImGui::PushID(compteur_id);                                               // When some ImGui items have the same label (for exemple the next two buttons are labeled "Yo") ImGui needs you to specify an ID so that it can distinguish them. It can be an int, a pointer, a string, etc.                                                                  // You will definitely run into this when you create a button for each of your chess pieces, so remember to give them an ID!
-                        ImGui::Button(pieceMap[i][j].c_str(), ImVec2{100.f, 100.f});
+                        ImGui::PushID(compteur_id);
+
+                        // JUSTE AVANT DE FAIRE AFFICHER AVEC LE LABEL IL FAUT FAIRE UNE VERIF EN MODE EXISTE T IL UNE PIECE SUR CETTE CASE ? en gros si c pas null pointer alors on fait la ligne suivante sinon nan
+                        if (pieceMap[i][j] != nullptr)
+                        {
+                            ImGui::Button(pieceMap[i][j]->label().c_str(), ImVec2{100.f, 100.f});
+                        }
+                        else
+                        {
+                            ImGui::Button("", ImVec2{100.f, 100.f});
+                        }
                         ImGui::PopID(); // Then pop the id you pushed after you created the widget
                         ImGui::PopStyleColor();
                     }
@@ -62,7 +80,14 @@ void Board::draw()
                     {
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1.f, 0.81f, 0.62f, 1.f});
                         ImGui::PushID(compteur_id);
-                        ImGui::Button(pieceMap[i][j].c_str(), ImVec2{100.f, 100.f});
+                        if (pieceMap[i][j] != nullptr)
+                        {
+                            ImGui::Button(pieceMap[i][j]->label().c_str(), ImVec2{100.f, 100.f});
+                        }
+                        else
+                        {
+                            ImGui::Button("", ImVec2{100.f, 100.f});
+                        }
                         ImGui::PopID();
 
                         ImGui::PopStyleColor();

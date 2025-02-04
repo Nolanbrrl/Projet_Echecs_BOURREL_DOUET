@@ -1,13 +1,14 @@
+#pragma once
 #include "Piece.hpp"
 
 class Tour : public Piece {
 public:
+    // Tour() = default;
     Tour(Color color, std::string label);
-    ~Tour() override = default;
-    std::string label() override;
-
-    void move();
+    // ~Tour() override = default;
+    void        setLabel(std::string label);
+    std::string getLabel();
 
 private:
-    int id{};
+    std::string label() override;
 };
