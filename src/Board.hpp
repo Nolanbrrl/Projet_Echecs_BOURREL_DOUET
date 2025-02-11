@@ -1,3 +1,4 @@
+#pragma once
 #include <winscard.h>
 #include <array>
 #include <iostream>

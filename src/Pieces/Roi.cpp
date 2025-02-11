@@ -1,5 +1,6 @@
 #include "Roi.hpp"
 #include "Board.hpp"
+#include "utils.hpp"
 
 static void move();
 

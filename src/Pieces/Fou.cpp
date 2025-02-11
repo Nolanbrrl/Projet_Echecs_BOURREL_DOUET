@@ -1,6 +1,6 @@
 #include "Fou.hpp"
 #include "Board.hpp"
-// crazy ou quoi là wesh
+#include "utils.hpp"
 
 static void move();
 

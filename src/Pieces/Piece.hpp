@@ -1,9 +1,15 @@
 #pragma once
 #include <iostream>
+#include <vector>
 enum class Color {
     noir,
     blanc
 
+};
+
+struct Position {
+    int x;
+    int y;
 };
 
 class Board;
@@ -15,11 +21,11 @@ public:
     Piece& operator=(const Piece&) = delete;
     Piece& operator=(Piece&&)      = delete;
 
-    virtual ~Piece() = default;
-    void                move();
-    virtual std::string label() = 0;
-    Color               getColor();
-    void                setColor(Color color);
+    virtual ~Piece()                                                                               = default;
+    virtual std::vector<Position> list_all_possible_moves(Board const&, Position current_position) = 0;
+    virtual std::string           label()                                                          = 0;
+    Color                         getColor();
+    void                          setColor(Color color);
 
 private:
     int   id{};
