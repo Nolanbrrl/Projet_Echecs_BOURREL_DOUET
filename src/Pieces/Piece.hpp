@@ -9,13 +9,14 @@ enum class Color {
 class Board;
 class Piece {
 public:
+    Piece()                        = default;
     Piece(const Piece&)            = delete;
     Piece(Piece&&)                 = delete;
     Piece& operator=(const Piece&) = delete;
     Piece& operator=(Piece&&)      = delete;
 
     virtual ~Piece() = default;
-    virtual void        move();
+    void                move();
     virtual std::string label() = 0;
     Color               getColor();
     void                setColor(Color color);
