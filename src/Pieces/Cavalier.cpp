@@ -36,14 +36,14 @@ std::vector<Position> Cavalier::list_all_possible_moves(Board const& board, Posi
 {
     std::vector<Position> possible_moves{};
 
-    add_move_if_valid({current_position.x + 2, current_position.y + 1}, possible_moves, board, getColor());
-    add_move_if_valid({current_position.x + 2, current_position.y - 1}, possible_moves, board, getColor());
-    add_move_if_valid({current_position.x + 1, current_position.y - 2}, possible_moves, board, getColor());
-    add_move_if_valid({current_position.x - 1, current_position.y - 2}, possible_moves, board, getColor());
-    add_move_if_valid({current_position.x - 2, current_position.y - 1}, possible_moves, board, getColor());
-    add_move_if_valid({current_position.x - 2, current_position.y + 1}, possible_moves, board, getColor());
-    add_move_if_valid({current_position.x - 1, current_position.y + 2}, possible_moves, board, getColor());
-    add_move_if_valid({current_position.x + 1, current_position.y + 2}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x + 2, .y = current_position.y + 1}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x + 2, .y = current_position.y - 1}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x + 1, .y = current_position.y - 2}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x - 1, .y = current_position.y - 2}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x - 2, .y = current_position.y - 1}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x - 2, .y = current_position.y + 1}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x - 1, .y = current_position.y + 2}, possible_moves, board, getColor());
+    add_move_if_valid({.x = current_position.x + 1, .y = current_position.y + 2}, possible_moves, board, getColor());
 
     return possible_moves;
 };
