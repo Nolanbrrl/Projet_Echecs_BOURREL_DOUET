@@ -12,5 +12,6 @@ public:
     std::string getLabel();
 
 private:
-    std::string label() override;
+    std::string           label() override;
+    std::vector<Position> list_all_possible_moves(Board const&, Position current_position) override;
 };
