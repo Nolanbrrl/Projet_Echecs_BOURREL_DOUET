@@ -80,7 +80,7 @@ void Board::draw()
                         {
                             ImGui::Button("", ImVec2{100.f, 100.f});
                         }
-                        ImGui::PopID(); // Then pop the id you pushed after you created the widget
+                        ImGui::PopID();
                         if (should_highlight)
                         {
                             ImGui::PopStyleColor();

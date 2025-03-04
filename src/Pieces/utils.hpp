@@ -6,7 +6,7 @@
 
 static bool is_move_valid(Board const& board, Position pos_future, Color color)
 {
-    if (pos_future.x < 0 | pos_future.x > 7 | pos_future.y < 0 | pos_future.y > 7)
+    if (pos_future.x < 0 || pos_future.x > 7 || pos_future.y < 0 || pos_future.y > 7)
     {
         return false;
     }
@@ -14,6 +14,11 @@ static bool is_move_valid(Board const& board, Position pos_future, Color color)
     {
         return false;
     }
+    if (board.pieceMap[pos_future.x][pos_future.y] != nullptr && color != board.pieceMap[pos_future.x][pos_future.y]->getColor())
+    {
+        return true;
+    }
+    return true;
 }
 
 static void add_move_if_valid(Position pos_future, std::vector<Position>& possible_moves, Board const& board, Color color)
