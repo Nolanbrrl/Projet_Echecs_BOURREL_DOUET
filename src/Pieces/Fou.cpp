@@ -33,6 +33,7 @@ std::vector<Position> Fou::list_all_possible_moves(Board const& board, Position 
     while (is_move_valid(board, (Next_position), getColor()))
     {
         add_move_if_valid(Next_position, possible_moves, board, getColor());
+        Next_position = {.x = current_position.x + i, .y = current_position.y + i};
         i++;
     }
     int      j{1};
@@ -40,21 +41,24 @@ std::vector<Position> Fou::list_all_possible_moves(Board const& board, Position 
     while (is_move_valid(board, (Next_position2), getColor()))
     {
         add_move_if_valid(Next_position2, possible_moves, board, getColor());
-        i++;
+        Next_position2 = {.x = current_position.x - j, .y = current_position.y - j};
+        j++;
     }
     int      k{1};
     Position Next_position3 = {.x = current_position.x + k, .y = current_position.y - k};
     while (is_move_valid(board, (Next_position3), getColor()))
     {
         add_move_if_valid(Next_position3, possible_moves, board, getColor());
-        i++;
+        Next_position3 = {.x = current_position.x + k, .y = current_position.y - k};
+        k++;
     }
     int      l{1};
     Position Next_position4 = {.x = current_position.x - l, .y = current_position.y + l};
     while (is_move_valid(board, (Next_position4), getColor()))
     {
         add_move_if_valid(Next_position4, possible_moves, board, getColor());
-        i++;
+        Next_position4 = {.x = current_position.x - l, .y = current_position.y + l};
+        l++;
     }
     return possible_moves;
 };
