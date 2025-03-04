@@ -1,6 +1,7 @@
 ---
 Checks: '
   *,
+  -modernize-use-designated-initializers,
   -modernize-use-ranges,
   -cppcoreguidelines-pro-bounds-constant-array-index,
   -readability-math-missing-parentheses,

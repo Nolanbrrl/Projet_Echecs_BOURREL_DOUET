@@ -1,5 +1,6 @@
 #include "Board.hpp"
 #include <imgui.h>
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include "Pieces/Cavalier.hpp"
@@ -41,7 +42,6 @@ void Board::draw()
     };
 
     float value{0.f};
-    int   compteur_id = 0;
     quick_imgui::loop(
         "Chess",
         /* init: */ [&]() {},
@@ -51,6 +51,7 @@ void Board::draw()
             ImGui::Begin("Plateau");
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
+            int compteur_id = 0;
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
@@ -63,33 +64,55 @@ void Board::draw()
                     {
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0.82f, 0.54f, 0.27f, 1.f}); // Changes the color of all buttons until we call ImGui::PopStyleColor(). There is also ImGuiCol_ButtonActive and ImGuiCol_ButtonHovered
                         ImGui::PushID(compteur_id);
-
-                        // JUSTE AVANT DE FAIRE AFFICHER AVEC LE LABEL IL FAUT FAIRE UNE VERIF EN MODE EXISTE T IL UNE PIECE SUR CETTE CASE ? en gros si c pas null pointer alors on fait la ligne suivante sinon nan
+                        bool should_highlight = std::find(this->possible_moves.begin(), this->possible_moves.end(), Position{i, j}) != this->possible_moves.end();
+                        if (should_highlight)
+                        {
+                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1.f, 1.f, 1.f, 1.f});
+                        }
                         if (pieceMap[i][j] != nullptr)
                         {
-                            ImGui::Button(pieceMap[i][j]->label().c_str(), ImVec2{100.f, 100.f});
+                            if (ImGui::Button(pieceMap[i][j]->label().c_str(), ImVec2{100.f, 100.f}))
+                            {
+                                this->possible_moves = pieceMap[i][j]->list_all_possible_moves(*this, {i, j});
+                            }
                         }
                         else
                         {
                             ImGui::Button("", ImVec2{100.f, 100.f});
                         }
                         ImGui::PopID(); // Then pop the id you pushed after you created the widget
+                        if (should_highlight)
+                        {
+                            ImGui::PopStyleColor();
+                        }
                         ImGui::PopStyleColor();
                     }
                     else if (tileMap[i][j] == 1)
                     {
                         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1.f, 0.81f, 0.62f, 1.f});
                         ImGui::PushID(compteur_id);
+                        bool should_highlight = std::find(this->possible_moves.begin(), this->possible_moves.end(), Position{i, j}) != this->possible_moves.end();
+                        if (should_highlight)
+                        {
+                            // ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, 3.f);
+                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{1.f, 1.f, 1.f, 1.f});
+                        }
                         if (pieceMap[i][j] != nullptr)
                         {
-                            ImGui::Button(pieceMap[i][j]->label().c_str(), ImVec2{100.f, 100.f});
+                            if (ImGui::Button(pieceMap[i][j]->label().c_str(), ImVec2{100.f, 100.f}))
+                            {
+                                this->possible_moves = pieceMap[i][j]->list_all_possible_moves(*this, {i, j});
+                            }
                         }
                         else
                         {
                             ImGui::Button("", ImVec2{100.f, 100.f});
                         }
                         ImGui::PopID();
-
+                        if (should_highlight)
+                        {
+                            ImGui::PopStyleColor();
+                        }
                         ImGui::PopStyleColor();
                     }
 

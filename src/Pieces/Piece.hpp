@@ -10,6 +10,8 @@ enum class Color {
 struct Position {
     int x;
     int y;
+
+    bool operator==(Position const& pos) const = default;
 };
 
 class Board;
