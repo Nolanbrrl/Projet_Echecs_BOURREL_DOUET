@@ -115,7 +115,6 @@ void Board::draw()
                         }
                         ImGui::PopStyleColor();
                     }
-
                     compteur_id++;
                 }
             }

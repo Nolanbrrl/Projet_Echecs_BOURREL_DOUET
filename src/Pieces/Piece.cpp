@@ -10,3 +10,9 @@ void Piece::setColor(Color color)
 {
     this->color = color;
 }
+
+void Piece::move(Board& board, std::vector<Position> const& possible_moves, Position current_position, Position next_position)
+{
+    board.pieceMap[next_position.x][next_position.y]       = std::move(board.pieceMap[current_position.x][current_position.y]);
+    board.pieceMap[current_position.x][current_position.y] = nullptr;
+}

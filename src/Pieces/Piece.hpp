@@ -28,6 +28,7 @@ public:
     virtual std::string           label()                                                          = 0;
     Color                         getColor();
     void                          setColor(Color color);
+    void                          move(Board&, std::vector<Position> const& possible_moves, Position current_position, Position next_position);
 
 private:
     int   id{};
