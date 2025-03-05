@@ -15,12 +15,14 @@
 Board::Board()
     : pieceMap{{
           {std::make_unique<Tour>(Color::noir, "T"), std::make_unique<Cavalier>(Color::noir, "C"), std::make_unique<Fou>(Color::noir, "F"), std::make_unique<Reine>(Color::noir, "Q"), std::make_unique<Roi>(Color::noir, "K"), std::make_unique<Fou>(Color::noir, "F"), std::make_unique<Cavalier>(Color::noir, "C"), std::make_unique<Tour>(Color::noir, "T")},
-          {std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P")},
+          //   {std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P")},
           {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
           {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
           {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
           {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
           {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+          {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+          //   {std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P")},
           {std::make_unique<Tour>(Color::blanc, "T"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Roi>(Color::blanc, "K"), std::make_unique<Reine>(Color::blanc, "Q"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Tour>(Color::blanc, "T")}
           // tableau de piece
       }}
@@ -33,6 +35,21 @@ Board::Board()
 
 //     return pieceMap[pos.x][pos.y].get();
 // }
+
+bool Board::is_inside_board(Position pos) const
+{
+    return (pos.x >= 0 && pos.x < 8 && pos.y >= 0 && pos.y < 8);
+}
+
+bool Board::is_enemy_piece(Position pos, Color color) const
+{
+    // Vérifie si la case est occupée par une pièce
+    if (pieceMap[pos.x][pos.y] == nullptr)
+        return false;
+
+    // Récupère la pièce à la position donnée et compare sa couleur
+    return pieceMap[pos.x][pos.y]->getColor() != color;
+}
 
 void Board::draw()
 {
@@ -62,17 +79,14 @@ void Board::draw()
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    // Déterminer la couleur de base de la case
                     ImVec4 buttonColor = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
 
-                    // Vérifier si la case doit être surlignée
                     bool should_highlight = std::find(possible_moves.begin(), possible_moves.end(), Position{i, j}) != possible_moves.end();
                     if (should_highlight)
-                        buttonColor = ImVec4{0.64f, 0.22f, 0.f, 1.f}; // Couleur des cases highlightées
+                        buttonColor = ImVec4{0.64f, 0.22f, 0.f, 1.f};
 
-                    // Appliquer la couleur
                     ImGui::PushStyleColor(ImGuiCol_Button, buttonColor);
-                    ImGui::PushID(i * 8 + j); // ID unique pour éviter les conflits
+                    ImGui::PushID(i * 8 + j);
 
                     bool clicked = false;
 
@@ -87,12 +101,12 @@ void Board::draw()
 
                     if (clicked)
                     {
-                        if (pieceMap[i][j] != nullptr) // Sélectionner une pièce
+                        if (pieceMap[i][j] != nullptr)
                         {
                             selected_piece_position = {i, j};
                             possible_moves          = pieceMap[i][j]->list_all_possible_moves(*this, {i, j});
                         }
-                        else if (should_highlight && selected_piece_position) // Déplacement de la pièce
+                        else if (should_highlight && selected_piece_position)
                         {
                             auto [old_x, old_y] = selected_piece_position.value();
 
@@ -110,7 +124,6 @@ void Board::draw()
                     ImGui::PopID();
                     ImGui::PopStyleColor();
 
-                    // S'assurer que les cases restent sur la même ligne
                     if (j < 7)
                         ImGui::SameLine();
                 }
