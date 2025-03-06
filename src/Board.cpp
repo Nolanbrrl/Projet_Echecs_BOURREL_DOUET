@@ -28,29 +28,6 @@ Board::Board()
       }}
 {}
 
-// std::optional<Piece *> Board::get_piece(Position pos) const
-// {
-//     if (pos.x < 0 || pos.x >= 8 || pos.y < 0 || pos.y >= 8)
-//         return nullptr;
-
-//     return pieceMap[pos.x][pos.y].get();
-// }
-
-bool Board::is_inside_board(Position pos) const
-{
-    return (pos.x >= 0 && pos.x < 8 && pos.y >= 0 && pos.y < 8);
-}
-
-bool Board::is_enemy_piece(Position pos, Color color) const
-{
-    // Vérifie si la case est occupée par une pièce
-    if (pieceMap[pos.x][pos.y] == nullptr)
-        return false;
-
-    // Récupère la pièce à la position donnée et compare sa couleur
-    return pieceMap[pos.x][pos.y]->getColor() != color;
-}
-
 void Board::draw()
 {
     std::array<std::array<int, 8>, 8> tileMap{
