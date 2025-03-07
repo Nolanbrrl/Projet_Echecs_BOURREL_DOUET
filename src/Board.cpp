@@ -87,10 +87,12 @@ void Board::draw()
                                 if (pieceMap[i][j]->getColor() == Color::noir)
                                 {
                                     cimetiere_piece_noire.push_back(std::move(pieceMap[i][j]));
+                                    std::cout << "cim noir : " << cimetiere_piece_noire[0] << std::endl;
                                 }
                                 else if (pieceMap[i][j]->getColor() == Color::blanc)
                                 {
                                     cimetiere_piece_blanche.push_back(std::move(pieceMap[i][j]));
+                                    std::cout << "cim blanc : " << cimetiere_piece_blanche[0] << std::endl;
                                 }
                                 pieceMap[i][j]         = std::move(pieceMap[old_x][old_y]);
                                 pieceMap[old_x][old_y] = nullptr;
