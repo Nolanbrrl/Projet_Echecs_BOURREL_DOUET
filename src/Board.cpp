@@ -78,23 +78,31 @@ void Board::draw()
 
                     if (clicked)
                     {
-                        if (pieceMap[i][j] != nullptr)
-                        {
-                            selected_piece_position = {i, j};
-                            possible_moves          = pieceMap[i][j]->list_all_possible_moves(*this, {i, j});
-                        }
-                        else if (should_highlight && selected_piece_position)
+                        if (should_highlight && selected_piece_position)
                         {
                             auto [old_x, old_y] = selected_piece_position.value();
 
                             if (pieceMap[old_x][old_y] != nullptr)
                             {
+                                if (pieceMap[i][j]->getColor() == Color::noir)
+                                {
+                                    cimetiere_piece_noire.push_back(std::move(pieceMap[i][j]));
+                                }
+                                else if (pieceMap[i][j]->getColor() == Color::blanc)
+                                {
+                                    cimetiere_piece_blanche.push_back(std::move(pieceMap[i][j]));
+                                }
                                 pieceMap[i][j]         = std::move(pieceMap[old_x][old_y]);
                                 pieceMap[old_x][old_y] = nullptr;
 
                                 possible_moves.clear();
                                 selected_piece_position.reset();
                             }
+                        }
+                        else if (pieceMap[i][j] != nullptr)
+                        {
+                            selected_piece_position = {i, j};
+                            possible_moves          = pieceMap[i][j]->list_all_possible_moves(*this, {i, j});
                         }
                     }
 

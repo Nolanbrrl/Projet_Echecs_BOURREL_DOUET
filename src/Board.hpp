@@ -17,4 +17,6 @@ public:
     std::optional<Position>                              selected_piece_position;
     bool                                                 is_inside_board(Position pos) const;
     bool                                                 is_enemy_piece(Position pos, Color color) const;
+    std::vector<std::unique_ptr<Piece>>                  cimetiere_piece_noire;
+    std::vector<std::unique_ptr<Piece>>                  cimetiere_piece_blanche;
 };
