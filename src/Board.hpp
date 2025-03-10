@@ -20,4 +20,6 @@ public:
     std::vector<std::unique_ptr<Piece>>                  cimetiere_piece_noire;
     std::vector<std::unique_ptr<Piece>>                  cimetiere_piece_blanche;
     bool                                                 partie_terminee = false;
+    void                                                 resetBoard();
+    Color                                                tour_actuel = Color::blanc;
 };

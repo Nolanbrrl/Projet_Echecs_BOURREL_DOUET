@@ -29,6 +29,28 @@ Board::Board()
       }}
 {}
 
+void Board::resetBoard()
+{
+    pieceMap = {{
+        {std::make_unique<Tour>(Color::noir, "T"), std::make_unique<Cavalier>(Color::noir, "C"), std::make_unique<Fou>(Color::noir, "F"), std::make_unique<Reine>(Color::noir, "Q"), std::make_unique<Roi>(Color::noir, "K"), std::make_unique<Fou>(Color::noir, "F"), std::make_unique<Cavalier>(Color::noir, "C"), std::make_unique<Tour>(Color::noir, "T")},
+        //   {std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P"), std::make_unique<Pion>(Color::noir, "P")},
+        {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+        {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+        {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+        {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+        {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+        {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+        //   {std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P")},
+        {std::make_unique<Tour>(Color::blanc, "T"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Roi>(Color::blanc, "K"), std::make_unique<Reine>(Color::blanc, "Q"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Tour>(Color::blanc, "T")}
+        // tableau de piece
+    }};
+    cimetiere_piece_noire.clear();
+    cimetiere_piece_blanche.clear();
+    selected_piece_position.reset();
+    possible_moves.clear();
+    partie_terminee = false;
+}
+
 void Board::draw()
 {
     std::array<std::array<int, 8>, 8> tileMap{
@@ -49,9 +71,9 @@ void Board::draw()
         /* loop: */
         [&]() {
             ImGui::Begin("Plateau");
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0)); // Pas d'espacement entre les cases
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-            ImVec2 buttonSize = ImVec2{100.f, 100.f}; // Taille fixe des boutons
+            ImVec2 buttonSize = ImVec2{100.f, 100.f};
 
             for (int i = 0; i < 8; i++)
             {
@@ -92,16 +114,18 @@ void Board::draw()
                                 if (pieceMap[i][j] != nullptr && pieceMap[i][j]->getColor() == Color::noir)
                                 {
                                     cimetiere_piece_noire.push_back(std::move(pieceMap[i][j]));
-                                    std::cout << "cim noir : " << cimetiere_piece_noire[0] << std::endl;
+                                    std::cout << "cim noir : " << cimetiere_piece_noire[0] << '\n';
                                 }
                                 else if (pieceMap[i][j] != nullptr && pieceMap[i][j]->getColor() == Color::blanc)
                                 {
                                     cimetiere_piece_blanche.push_back(std::move(pieceMap[i][j]));
-                                    std::cout << "cim blanc : " << cimetiere_piece_blanche[0] << std::endl;
+                                    std::cout << "cim blanc : " << cimetiere_piece_blanche[0] << '\n';
                                 }
 
                                 pieceMap[i][j]         = std::move(pieceMap[old_x][old_y]);
                                 pieceMap[old_x][old_y] = nullptr;
+
+                                tour_actuel = (tour_actuel == Color::blanc) ? Color::noir : Color::blanc;
 
                                 possible_moves.clear();
                                 selected_piece_position.reset();
@@ -109,8 +133,11 @@ void Board::draw()
                         }
                         else if (pieceMap[i][j] != nullptr)
                         {
-                            selected_piece_position = {i, j};
-                            possible_moves          = pieceMap[i][j]->list_all_possible_moves(*this, {i, j});
+                            if (tour_actuel == pieceMap[i][j]->getColor())
+                            {
+                                selected_piece_position = {i, j};
+                                possible_moves          = pieceMap[i][j]->list_all_possible_moves(*this, {i, j});
+                            }
                         }
                     }
 
@@ -129,11 +156,11 @@ void Board::draw()
 
             if (ImGui::BeginPopupModal("Partie terminée", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Le roi a été capturé. La partie est terminée !");
+                ImGui::Text("Le roi a été mangé. La partie est terminée !");
                 if (ImGui::Button("OK"))
                 {
+                    resetBoard();
                     ImGui::CloseCurrentPopup();
-                    partie_terminee = false; // Réinitialisation
                 }
                 ImGui::EndPopup();
             }
