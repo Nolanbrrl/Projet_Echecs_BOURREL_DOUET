@@ -1,6 +1,7 @@
 #include "Board.hpp"
 #include <imgui.h>
 #include <algorithm>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include "Pieces/Cavalier.hpp"
@@ -84,16 +85,21 @@ void Board::draw()
 
                             if (pieceMap[old_x][old_y] != nullptr)
                             {
-                                if (pieceMap[i][j]->getColor() == Color::noir)
+                                if (pieceMap[i][j] != nullptr && pieceMap[i][j]->label() == "K")
+                                {
+                                    partie_terminee = true;
+                                }
+                                if (pieceMap[i][j] != nullptr && pieceMap[i][j]->getColor() == Color::noir)
                                 {
                                     cimetiere_piece_noire.push_back(std::move(pieceMap[i][j]));
                                     std::cout << "cim noir : " << cimetiere_piece_noire[0] << std::endl;
                                 }
-                                else if (pieceMap[i][j]->getColor() == Color::blanc)
+                                else if (pieceMap[i][j] != nullptr && pieceMap[i][j]->getColor() == Color::blanc)
                                 {
                                     cimetiere_piece_blanche.push_back(std::move(pieceMap[i][j]));
                                     std::cout << "cim blanc : " << cimetiere_piece_blanche[0] << std::endl;
                                 }
+
                                 pieceMap[i][j]         = std::move(pieceMap[old_x][old_y]);
                                 pieceMap[old_x][old_y] = nullptr;
 
@@ -114,6 +120,22 @@ void Board::draw()
                     if (j < 7)
                         ImGui::SameLine();
                 }
+            }
+
+            if (partie_terminee)
+            {
+                ImGui::OpenPopup("Partie terminée");
+            }
+
+            if (ImGui::BeginPopupModal("Partie terminée", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Le roi a été capturé. La partie est terminée !");
+                if (ImGui::Button("OK"))
+                {
+                    ImGui::CloseCurrentPopup();
+                    partie_terminee = false; // Réinitialisation
+                }
+                ImGui::EndPopup();
             }
 
             ImGui::PopStyleVar();

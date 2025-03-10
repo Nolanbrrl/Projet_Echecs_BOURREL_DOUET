@@ -19,4 +19,5 @@ public:
     bool                                                 is_enemy_piece(Position pos, Color color) const;
     std::vector<std::unique_ptr<Piece>>                  cimetiere_piece_noire;
     std::vector<std::unique_ptr<Piece>>                  cimetiere_piece_blanche;
+    bool                                                 partie_terminee = false;
 };
