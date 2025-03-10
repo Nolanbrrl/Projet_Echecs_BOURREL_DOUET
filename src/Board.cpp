@@ -146,8 +146,8 @@ void Board::draw()
                                             {
                                                 cimetiere_piece_blanche.push_back(std::move(pieceMap[passant_pion.x][passant_pion.y]));
                                             }
+                                            pieceMap[passant_pion.x][passant_pion.y] = nullptr;
                                         }
-                                        pieceMap[passant_pion.x][passant_pion.y] = nullptr;
                                         pion_pour_prise_en_passant.reset();
                                     }
                                 }
