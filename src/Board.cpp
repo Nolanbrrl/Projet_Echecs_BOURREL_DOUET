@@ -44,6 +44,7 @@ void Board::resetBoard()
     cimetiere_piece_blanche.clear();
     selected_piece_position.reset();
     possible_moves.clear();
+    pion_pour_prise_en_passant.reset();
     partie_terminee = false;
 }
 
@@ -107,6 +108,17 @@ void Board::draw()
                                 {
                                     partie_terminee = true;
                                 }
+                                if (pieceMap[old_x][old_y]->label() == "P")
+                                {
+                                    if (std::abs(old_x - i) == 2)
+                                    {
+                                        pion_pour_prise_en_passant = Position{i, j};
+                                    }
+                                    else
+                                    {
+                                        pion_pour_prise_en_passant.reset();
+                                    }
+                                }
                                 if (pieceMap[i][j] != nullptr && pieceMap[i][j]->getColor() == Color::noir)
                                 {
                                     cimetiere_piece_noire.push_back(std::move(pieceMap[i][j]));
@@ -116,6 +128,28 @@ void Board::draw()
                                 {
                                     cimetiere_piece_blanche.push_back(std::move(pieceMap[i][j]));
                                     std::cout << "cim blanc : " << cimetiere_piece_blanche[0] << '\n';
+                                }
+
+                                if (pion_pour_prise_en_passant.has_value())
+                                {
+                                    Position passant_pion = pion_pour_prise_en_passant.value();
+
+                                    if (pieceMap[old_x][old_y]->label() == "P" && old_x == passant_pion.x && std::abs(old_y - passant_pion.y) == 1 && i == passant_pion.x + (pieceMap[old_x][old_y]->getColor() == Color::blanc ? -1 : 1))
+                                    {
+                                        if (pieceMap[passant_pion.x][passant_pion.y] != nullptr)
+                                        {
+                                            if (pieceMap[passant_pion.x][passant_pion.y]->getColor() == Color::noir)
+                                            {
+                                                cimetiere_piece_noire.push_back(std::move(pieceMap[passant_pion.x][passant_pion.y]));
+                                            }
+                                            else if (pieceMap[passant_pion.x][passant_pion.y]->getColor() == Color::blanc)
+                                            {
+                                                cimetiere_piece_blanche.push_back(std::move(pieceMap[passant_pion.x][passant_pion.y]));
+                                            }
+                                        }
+                                        pieceMap[passant_pion.x][passant_pion.y] = nullptr;
+                                        pion_pour_prise_en_passant.reset();
+                                    }
                                 }
 
                                 pieceMap[i][j]         = std::move(pieceMap[old_x][old_y]);

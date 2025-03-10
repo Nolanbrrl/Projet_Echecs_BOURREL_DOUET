@@ -22,4 +22,5 @@ public:
     bool                                                 partie_terminee = false;
     void                                                 resetBoard();
     Color                                                tour_actuel = Color::blanc;
+    std::optional<Position>                              pion_pour_prise_en_passant;
 };
