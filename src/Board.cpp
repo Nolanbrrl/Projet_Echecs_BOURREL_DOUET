@@ -127,11 +127,6 @@ void Board::handleClick(int i, int j)
                 else
                     cimetiere_piece_blanche.push_back(std::move(pieceMap[i][j]));
             }
-            // DANS LA LIGNE DU DESSOUS GERER L'AUTRE DIRECTION DU EN PASSANT DONC - 1 POUR L'AUTRE COULEUR
-            if (pieceMap[old_x][old_y]->label() == "P" && pion_pour_prise_en_passant.has_value() && ((pion_pour_prise_en_passant.value().x + 1 == i && pieceMap[old_x][old_y]->getColor() == Color::noir) || (pion_pour_prise_en_passant.value().x - 1 == i && pieceMap[old_x][old_y]->getColor() == Color::blanc)) && pion_pour_prise_en_passant.value().y == j)
-            {
-                pieceMap[pion_pour_prise_en_passant.value().x][pion_pour_prise_en_passant.value().y] = nullptr;
-            }
             pieceMap[i][j]         = std::move(pieceMap[old_x][old_y]);
             pieceMap[old_x][old_y] = nullptr;
             tour_actuel            = (tour_actuel == Color::blanc) ? Color::noir : Color::blanc;
