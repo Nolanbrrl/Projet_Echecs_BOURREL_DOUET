@@ -69,7 +69,6 @@ std::vector<Position> Pion::list_all_possible_moves(Board const& board, Position
         {
             Position passant_position = {current_position.x + direction, passant_pion.y};
 
-            // Vérifie que la case où le pion atterrirait est bien vide
             if (board.pieceMap[passant_position.x][passant_position.y] == nullptr)
             {
                 possible_moves.push_back(passant_position);
