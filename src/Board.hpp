@@ -8,10 +8,17 @@
 
 class Board {
 private:
+    std::array<std::array<int, 8>, 8> tileMap;
+
 public:
     Board();
 
     void                                                 draw();
+    void                                                 initializeBoard();
+    void                                                 drawBoard();
+    void                                                 drawPieces();
+    void                                                 handleClick(int i, int j);
+    void                                                 checkGameOver();
     std::array<std::array<std::unique_ptr<Piece>, 8>, 8> pieceMap{};
     std::vector<Position>                                possible_moves;
     std::optional<Position>                              selected_piece_position;
