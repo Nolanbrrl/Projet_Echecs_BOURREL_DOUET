@@ -23,7 +23,7 @@ Board::Board()
           {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
           {std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P")},
           {std::make_unique<Tour>(Color::blanc, "T"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Reine>(Color::blanc, "Q"), std::make_unique<Roi>(Color::blanc, "K"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Tour>(Color::blanc, "T")}
-          // tableau de piece
+          // commentaire pour l'alignement de ces fucking lignes
       }}
 {}
 
@@ -38,7 +38,7 @@ void Board::resetBoard()
         {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
         {std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P")},
         {std::make_unique<Tour>(Color::blanc, "T"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Reine>(Color::blanc, "Q"), std::make_unique<Roi>(Color::blanc, "K"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Tour>(Color::blanc, "T")}
-        // tableau de piece
+        // commentaire pour l'alignement de ces fucking lignes
     }};
     cimetiere_piece_noire.clear();
     cimetiere_piece_blanche.clear();
@@ -109,8 +109,16 @@ void Board::handleClick(int i, int j)
 
             if (pieceMap[old_x][old_y]->label() == "P" && std::abs(old_x - i) == 2)
                 pion_pour_prise_en_passant = Position{i, j};
+
             else
+            {
+                if (pieceMap[old_x][old_y]->label() == "P" && pion_pour_prise_en_passant.has_value() && pion_pour_prise_en_passant.value().x + 1 == i && pion_pour_prise_en_passant.value().y == j)
+                {
+                    pieceMap[pion_pour_prise_en_passant.value().x][pion_pour_prise_en_passant.value().y] = nullptr;
+                }
+
                 pion_pour_prise_en_passant.reset();
+            }
 
             if (pieceMap[i][j] != nullptr)
             {
@@ -119,7 +127,11 @@ void Board::handleClick(int i, int j)
                 else
                     cimetiere_piece_blanche.push_back(std::move(pieceMap[i][j]));
             }
-
+            // DANS LA LIGNE DU DESSOUS GERER L'AUTRE DIRECTION DU EN PASSANT DONC - 1 POUR L'AUTRE COULEUR
+            if (pieceMap[old_x][old_y]->label() == "P" && pion_pour_prise_en_passant.has_value() && pion_pour_prise_en_passant.value().x + 1 == i && pion_pour_prise_en_passant.value().y == j)
+            {
+                pieceMap[pion_pour_prise_en_passant.value().x][pion_pour_prise_en_passant.value().y] = nullptr;
+            }
             pieceMap[i][j]         = std::move(pieceMap[old_x][old_y]);
             pieceMap[old_x][old_y] = nullptr;
             tour_actuel            = (tour_actuel == Color::blanc) ? Color::noir : Color::blanc;
