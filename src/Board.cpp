@@ -40,7 +40,7 @@ void Board::resetBoard()
         {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
         {std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P"), std::make_unique<Pion>(Color::blanc, "P")},
         {std::make_unique<Tour>(Color::blanc, "T"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Reine>(Color::blanc, "Q"), std::make_unique<Roi>(Color::blanc, "K"), std::make_unique<Fou>(Color::blanc, "F"), std::make_unique<Cavalier>(Color::blanc, "C"), std::make_unique<Tour>(Color::blanc, "T")}
-        // commentaire pour l'alignement de ces fucking lignes
+        // commentaire pour l'alignement de ces fucking lignes encore
     }};
     cimetiere_piece_noire.clear();
     cimetiere_piece_blanche.clear();
@@ -61,13 +61,19 @@ void Board::initializeBoard()
          {0, 1, 0, 1, 0, 1, 0, 1},
          {1, 0, 1, 0, 1, 0, 1, 0},
          {0, 1, 0, 1, 0, 1, 0, 1}}
-        // commentaire pour l'alignement de ces fucking lignes
+        // commentaire pour l'alignement de ces fucking lignes ENCORE
     };
 }
 
 void Board::drawBoard()
 {
     ImVec2 buttonSize = ImVec2{100.f, 100.f};
+
+    if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+    {
+        selected_piece_position.reset();
+        possible_moves.clear();
+    }
 
     for (int i = 0; i < 8; i++)
     {
@@ -180,7 +186,12 @@ void Board::draw()
 
                 ImGui::PopStyleVar();
                 ImGui::End(); },
-            // .key_callback             = [](int key, int scancode, int action, int mods) { std::cout << "Key: " << key << " Scancode: " << scancode
+            // .key_callback = [](int key, int scancode, int action, int mods) {
+            //     if (action == 1 && key == 'Q')
+            //     {
+            //         quick_imgui::stop();
+            //     }
+            // }
             //                                                                             << " Action: " << action << " Mods: " << mods << '\n'; },
             // .mouse_button_callback    = [](int button, int action, int mods) { std::cout << "Button: " << button << " Action: " << action
             //                                                                           << " Mods: " << mods << '\n'; },
