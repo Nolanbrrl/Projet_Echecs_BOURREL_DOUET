@@ -11,6 +11,7 @@
 #include "Pieces/Reine.hpp"
 #include "Pieces/Roi.hpp"
 #include "Pieces/Tour.hpp"
+#include "glad/glad.h"
 #include "quick_imgui/quick_imgui.hpp"
 
 Board::Board()
@@ -186,6 +187,7 @@ void Board::draw()
 
                 ImGui::PopStyleVar();
                 ImGui::End(); },
+
             // .key_callback = [](int key, int scancode, int action, int mods) {
             //     if (action == 1 && key == 'Q')
             //     {
