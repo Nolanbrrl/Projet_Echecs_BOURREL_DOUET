@@ -13,7 +13,7 @@ private:
 public:
     Board();
 
-    void                                                 draw();
+    void                                                 draw(int argc, char** argv);
     void                                                 initializeBoard();
     void                                                 drawBoard();
     void                                                 drawPieces();

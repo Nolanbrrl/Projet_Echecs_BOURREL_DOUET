@@ -1,7 +1,9 @@
 #include "Board.hpp"
+#include <glad/glad.h>
 #include <imgui.h>
 #include <algorithm>
 #include <cstddef>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include "Pieces/Cavalier.hpp"
@@ -11,7 +13,9 @@
 #include "Pieces/Reine.hpp"
 #include "Pieces/Roi.hpp"
 #include "Pieces/Tour.hpp"
-#include "glad/glad.h"
+#include "glimac/FilePath.hpp"
+#include "glimac/Program.hpp"
+#include "glimac/Sphere.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
 Board::Board()
@@ -170,13 +174,56 @@ void Board::checkGameOver()
     }
 }
 
-void Board::draw()
+GLuint vaos[16];
+
+GLuint vbos[16];
+
+void Board::draw(int argc, char** argv)
 {
     quick_imgui::loop(
         "Quick ImGui",
         {
-            .init = []() { std::cout << "Init\n"; },
-            .loop = [this]() { 
+            .init = [argv]() {
+                std::cout << "Init\n";
+                glimac::FilePath applicationPath(argv[0]);
+                glimac::Program program =
+                    loadProgram(applicationPath.dirPath() + "/src/Shaders/vertex_shader.glsl",
+                                applicationPath.dirPath() + "/src/Shaders/fragment_shader.glsl");
+                program.use();
+                glimac::Sphere sphere(1, 32, 16);
+
+                glGenBuffers(16, vbos);
+                glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+              
+                GLsizeiptr size{static_cast<GLsizeiptr>(sphere.getVertexCount() *
+                                                        sizeof(glimac::ShapeVertex))};
+              
+                glBufferData(GL_ARRAY_BUFFER, size, sphere.getDataPointer(), GL_STATIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+              
+
+                glGenVertexArrays(16, vaos);
+                glBindVertexArray(vaos[0]);
+                const GLuint VERTEX_ATTR_POSITION = 0;
+                const GLuint VERTEX_ATTR_COLOR = 1;
+                glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+              
+                glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
+                glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE,
+                                      sizeof(glimac::ShapeVertex), 0);
+              
+                glEnableVertexAttribArray(VERTEX_ATTR_COLOR);
+                glVertexAttribPointer(VERTEX_ATTR_COLOR, 2, GL_FLOAT, GL_FALSE,
+                                      sizeof(glimac::ShapeVertex),
+                                      (const GLvoid *)(offsetof(
+                                          glimac::ShapeVertex,
+                                          texCoords))); // toujours mettre const GLvoid* pour
+                                                        // préciser le type qui est un
+                                                        // pointeur si jamais on ne met pas 0
+              
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBindVertexArray(0); },
+            .loop = [this]() {
                 ImGui::ShowDemoWindow();
 
                 ImGui::Begin("Plateau");
@@ -185,15 +232,23 @@ void Board::draw()
                 drawBoard();
                 checkGameOver();
 
+                glClearColor(1, 0, 0, 1.00f);
+                glClear(GL_COLOR_BUFFER_BIT);
+                glBindVertexArray(vaos[0]);
+                glDrawArrays(GL_TRIANGLES, 0, 3);
+                glBindVertexArray(0);
+                
+                
+                
                 ImGui::PopStyleVar();
                 ImGui::End(); },
 
-            // .key_callback = [](int key, int scancode, int action, int mods) {
+            // key_callback = [](int key, int scancode, int action, int mods) {
             //     if (action == 1 && key == 'Q')
             //     {
             //         quick_imgui::stop();
-            //     }
-            // }
+            //     }},
+
             //                                                                             << " Action: " << action << " Mods: " << mods << '\n'; },
             // .mouse_button_callback    = [](int button, int action, int mods) { std::cout << "Button: " << button << " Action: " << action
             //                                                                           << " Mods: " << mods << '\n'; },
@@ -202,4 +257,6 @@ void Board::draw()
             // .window_size_callback     = [](int width, int height) { std::cout << "Resized: " << width << ' ' << height << '\n'; },
         }
     );
+    glDeleteBuffers(16, vbos);
+    glDeleteVertexArrays(16, vaos);
 }

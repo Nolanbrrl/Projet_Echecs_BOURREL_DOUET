@@ -3,8 +3,8 @@
 #include "Board.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
-int main()
+int main(int argc, char** argv)
 {
     Board board;
-    board.draw();
+    board.draw(argc, argv);
 }
