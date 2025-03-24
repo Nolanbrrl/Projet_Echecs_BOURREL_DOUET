@@ -94,9 +94,16 @@ void Board::drawBoard()
 
             bool clicked = false;
             if (pieceMap[i][j] != nullptr)
+            {
+                ImVec4 pieceColor = (pieceMap[i][j]->getColor() == Color::noir) ? ImVec4{0.f, 0.f, 0.f, 1.f} : ImVec4{1.f, 1.f, 1.f, 1.f};
+                ImGui::PushStyleColor(ImGuiCol_Text, pieceColor);
                 clicked = ImGui::Button(pieceMap[i][j]->label().c_str(), buttonSize);
+                ImGui::PopStyleColor();
+            }
             else
+            {
                 clicked = ImGui::Button("", buttonSize);
+            }
 
             if (clicked)
                 handleClick(i, j);
@@ -178,6 +185,35 @@ GLuint vaos[16];
 
 GLuint vbos[16];
 
+void drawCube(const ImVec4& color)
+{
+    static const GLfloat vertices[] = {
+        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, // Back face
+        -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,     // Front face
+        -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,     // Top face
+        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, // Bottom face
+        0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f,     // Right face
+        -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f  // Left face
+    };
+
+    static const GLuint indices[] = {
+        0, 1, 2, 2, 3, 0,       // Back face
+        4, 5, 6, 6, 7, 4,       // Front face
+        8, 9, 10, 10, 11, 8,    // Top face
+        12, 13, 14, 14, 15, 12, // Bottom face
+        16, 17, 18, 18, 19, 16, // Right face
+        20, 21, 22, 22, 23, 20  // Left face
+    };
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+    glColor4f(color.x, color.y, color.z, color.w);
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, indices);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+}
+
 void Board::draw(int argc, char** argv)
 {
     quick_imgui::loop(
@@ -190,37 +226,29 @@ void Board::draw(int argc, char** argv)
                     loadProgram(applicationPath.dirPath() + "/src/Shaders/vertex_shader.glsl",
                                 applicationPath.dirPath() + "/src/Shaders/fragment_shader.glsl");
                 program.use();
-                glimac::Sphere sphere(1, 32, 16);
+
+                glEnable(GL_DEPTH_TEST); // Activer le test de profondeur
 
                 glGenBuffers(16, vbos);
                 glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-              
-                GLsizeiptr size{static_cast<GLsizeiptr>(sphere.getVertexCount() *
-                                                        sizeof(glimac::ShapeVertex))};
-              
-                glBufferData(GL_ARRAY_BUFFER, size, sphere.getDataPointer(), GL_STATIC_DRAW);
+
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
-              
 
                 glGenVertexArrays(16, vaos);
                 glBindVertexArray(vaos[0]);
                 const GLuint VERTEX_ATTR_POSITION = 0;
                 const GLuint VERTEX_ATTR_COLOR = 1;
                 glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-              
+
                 glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
                 glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE,
                                       sizeof(glimac::ShapeVertex), 0);
-              
+
                 glEnableVertexAttribArray(VERTEX_ATTR_COLOR);
                 glVertexAttribPointer(VERTEX_ATTR_COLOR, 2, GL_FLOAT, GL_FALSE,
                                       sizeof(glimac::ShapeVertex),
-                                      (const GLvoid *)(offsetof(
-                                          glimac::ShapeVertex,
-                                          texCoords))); // toujours mettre const GLvoid* pour
-                                                        // préciser le type qui est un
-                                                        // pointeur si jamais on ne met pas 0
-              
+                                      (const GLvoid *)(offsetof(glimac::ShapeVertex, texCoords)));
+
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
                 glBindVertexArray(0); },
             .loop = [this]() {
@@ -232,29 +260,26 @@ void Board::draw(int argc, char** argv)
                 drawBoard();
                 checkGameOver();
 
-                glClearColor(1, 0, 0, 1.00f);
-                glClear(GL_COLOR_BUFFER_BIT);
+                glClearColor(0.9f, 0.9f, 0.9f, 1.00f); // Fond gris clair
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Nettoyer le Z-buffer
                 glBindVertexArray(vaos[0]);
-                glDrawArrays(GL_TRIANGLES, 0, 3);
+
+                for (int i = 0; i < 8; ++i) {
+                    for (int j = 0; j < 8; ++j) {
+                        glPushMatrix();
+                        glTranslatef(i - 3.5f, j - 3.5f, 0.0f);
+
+                        ImVec4 color = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
+                        drawCube(color);
+
+                        glPopMatrix();
+                    }
+                }
+
                 glBindVertexArray(0);
-                
-                
-                
+
                 ImGui::PopStyleVar();
                 ImGui::End(); },
-
-            // key_callback = [](int key, int scancode, int action, int mods) {
-            //     if (action == 1 && key == 'Q')
-            //     {
-            //         quick_imgui::stop();
-            //     }},
-
-            //                                                                             << " Action: " << action << " Mods: " << mods << '\n'; },
-            // .mouse_button_callback    = [](int button, int action, int mods) { std::cout << "Button: " << button << " Action: " << action
-            //                                                                           << " Mods: " << mods << '\n'; },
-            // .cursor_position_callback = [](double xpos, double ypos) { std::cout << "Position: " << xpos << ' ' << ypos << '\n'; },
-            // .scroll_callback          = [](double xoffset, double yoffset) { std::cout << "Scroll: " << xoffset << ' ' << yoffset << '\n'; },
-            // .window_size_callback     = [](int width, int height) { std::cout << "Resized: " << width << ' ' << height << '\n'; },
         }
     );
     glDeleteBuffers(16, vbos);
