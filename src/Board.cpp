@@ -29,34 +29,22 @@ glm::vec3 targetCameraUp   = glm::vec3(0.0f, 1.0f, 0.0f);   // Orientation cible
 
 void setupCamera()
 {
-    // Si une transition est en cours, interpoler entre les positions
     if (isTransitioning)
     {
-        transitionProgress += 0.02f; // Ajustez la vitesse de transition ici
+        transitionProgress += 0.02f;
         if (transitionProgress >= 1.0f)
         {
             transitionProgress = 1.0f;
-            isTransitioning    = false; // Fin de la transition
+            isTransitioning    = false;
         }
 
-        // Interpolation linéaire (LERP) pour la position
         currentCameraPos = glm::mix(currentCameraPos, targetCameraPos, transitionProgress);
-
-        // Interpolation linéaire (LERP) pour l'orientation "up"
-        currentCameraUp = glm::mix(currentCameraUp, targetCameraUp, transitionProgress);
+        currentCameraUp  = glm::mix(currentCameraUp, targetCameraUp, transitionProgress);
     }
 
-    // Matrice de projection en perspective
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    glm::mat4 view       = glm::lookAt(currentCameraPos, glm::vec3(0.0f, 0.0f, 0.0f), currentCameraUp);
 
-    // Matrice de vue
-    glm::mat4 view = glm::lookAt(
-        currentCameraPos,            // Position interpolée de la caméra
-        glm::vec3(0.0f, 0.0f, 0.0f), // Point que la caméra regarde (centre du plateau)
-        currentCameraUp              // Orientation interpolée de la caméra
-    );
-
-    // Charger les matrices dans OpenGL
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(projection));
 
