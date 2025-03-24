@@ -19,13 +19,13 @@
 #include "quick_imgui/quick_imgui.hpp"
 
 bool  isTopView          = false;
-bool  isTransitioning    = false; // Indique si une transition est en cours
-float transitionProgress = 0.0f;  // Progression de la transition (entre 0.0 et 1.0)
+bool  isTransitioning    = false;
+float transitionProgress = 0.0f;
 
-glm::vec3 currentCameraPos = glm::vec3(0.0f, 10.0f, 10.0f); // Position actuelle de la caméra
-glm::vec3 targetCameraPos  = glm::vec3(0.0f, 10.0f, 10.0f); // Position cible de la caméra
-glm::vec3 currentCameraUp  = glm::vec3(0.0f, 1.0f, 0.0f);   // Orientation actuelle de la caméra
-glm::vec3 targetCameraUp   = glm::vec3(0.0f, 1.0f, 0.0f);   // Orientation cible de la caméra
+glm::vec3 currentCameraPos = glm::vec3(0.0f, 10.0f, 10.0f);
+glm::vec3 targetCameraPos  = glm::vec3(0.0f, 10.0f, 10.0f);
+glm::vec3 currentCameraUp  = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 targetCameraUp   = glm::vec3(0.0f, 1.0f, 0.0f);
 
 void setupCamera()
 {
@@ -54,7 +54,7 @@ void setupCamera()
 
 void handleKeyboardInput()
 {
-    if (ImGui::IsKeyPressed(ImGuiKey_A) && !isTransitioning)
+    if (ImGui::IsKeyPressed(ImGuiKey_UpArrow) && !isTransitioning)
     {
         // Passer à la vue du dessus
         targetCameraPos    = glm::vec3(0.0f, 20.0f, 0.0f);
@@ -62,7 +62,7 @@ void handleKeyboardInput()
         isTransitioning    = true;
         transitionProgress = 0.0f;
     }
-    if (ImGui::IsKeyPressed(ImGuiKey_Z) && !isTransitioning)
+    if (ImGui::IsKeyPressed(ImGuiKey_DownArrow) && !isTransitioning)
     {
         // Revenir à la vue actuelle
         targetCameraPos    = glm::vec3(0.0f, 10.0f, 10.0f);
@@ -242,21 +242,21 @@ GLuint vbos[16];
 void drawCube(const ImVec4& color)
 {
     static const GLfloat vertices[] = {
-        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, // Back face
-        -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,     // Front face
-        -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,     // Top face
-        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, // Bottom face
-        0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f,     // Right face
-        -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f  // Left face
+        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f,
+        -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
+        -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
+        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f,
+        0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f,
+        -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f // commentaire de remise a la ligne
     };
 
     static const GLuint indices[] = {
-        0, 1, 2, 2, 3, 0,       // Back face
-        4, 5, 6, 6, 7, 4,       // Front face
-        8, 9, 10, 10, 11, 8,    // Top face
-        12, 13, 14, 14, 15, 12, // Bottom face
-        16, 17, 18, 18, 19, 16, // Right face
-        20, 21, 22, 22, 23, 20  // Left face
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
+        8, 9, 10, 10, 11, 8,
+        12, 13, 14, 14, 15, 12,
+        16, 17, 18, 18, 19, 16,
+        20, 21, 22, 22, 23, 20 // commentaire de remise a la ligne
     };
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -268,6 +268,58 @@ void drawCube(const ImVec4& color)
     glDisableClientState(GL_VERTEX_ARRAY);
 }
 
+// Fonction auxiliaire pour dessiner les tuiles
+void Board::drawTiles()
+{
+    float thickness = 0.4f;
+
+    for (int i = 0; i < 8; ++i)
+    {
+        for (int j = 0; j < 8; ++j)
+        {
+            glPushMatrix();
+            glTranslatef(i - 3.5f, 0.0f, j - 3.5f); // Positionner sur la grille
+            glScalef(1.0f, thickness, 1.0f);        // Appliquer l'échelle uniforme
+
+            ImVec4 color = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
+            drawCube(color);
+
+            glPopMatrix();
+        }
+    }
+}
+
+// Fonction auxiliaire pour dessiner les bordures
+void Board::drawBorders()
+{
+    float  borderThickness = 0.1f;
+    ImVec4 borderColor     = ImVec4{0.01f, 0.01f, 0.01f, 1.f};
+
+    // Bords horizontaux
+    for (int i = 0; i < 8; ++i)
+    {
+        drawBorderCube(i - 3.5f, -0.05f, -4.1f, 1.3f, borderThickness, 0.2f, borderColor); // Bord supérieur
+        drawBorderCube(i - 3.5f, -0.05f, 4.1f, 1.3f, borderThickness, 0.2f, borderColor);  // Bord inférieur
+    }
+
+    // Bords verticaux
+    for (int j = 0; j < 8; ++j)
+    {
+        drawBorderCube(-4.1f, -0.05f, j - 3.5f, 0.2f, borderThickness, 1.3f, borderColor); // Bord gauche
+        drawBorderCube(4.1f, -0.05f, j - 3.5f, 0.2f, borderThickness, 1.3f, borderColor);  // Bord droit
+    }
+}
+
+// Fonction auxiliaire pour dessiner un cube de bordure
+void Board::drawBorderCube(float x, float y, float z, float scaleX, float scaleY, float scaleZ, const ImVec4& color)
+{
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glScalef(scaleX, scaleY, scaleZ);
+    drawCube(color);
+    glPopMatrix();
+}
+
 void Board::draw(int argc, char** argv)
 {
     quick_imgui::loop(
@@ -276,12 +328,11 @@ void Board::draw(int argc, char** argv)
             .init = [argv]() {
                 std::cout << "Init\n";
                 glimac::FilePath applicationPath(argv[0]);
-                glimac::Program  program =
-                    loadProgram(applicationPath.dirPath() + "/src/Shaders/vertex_shader.glsl", applicationPath.dirPath() + "/src/Shaders/fragment_shader.glsl");
+                glimac::Program program = loadProgram(
+                    applicationPath.dirPath() + "/src/Shaders/vertex_shader.glsl",
+                    applicationPath.dirPath() + "/src/Shaders/fragment_shader.glsl");
                 program.use();
-
-                glEnable(GL_DEPTH_TEST); // Activer le test de profondeur
-            },
+                glEnable(GL_DEPTH_TEST); },
             .loop = [this]() {
                 ImGui::ShowDemoWindow();
 
@@ -291,66 +342,14 @@ void Board::draw(int argc, char** argv)
                 drawBoard();
                 checkGameOver();
 
-                glClearColor(0.9f, 0.9f, 0.9f, 1.00f); // Fond gris clair
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Nettoyer le Z-buffer
+                glClearColor(0.9f, 0.9f, 0.9f, 1.0f); // Couleur du fond
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                // Gérer les entrées clavier
                 handleKeyboardInput();
-
-                // Configurer la caméra
                 setupCamera();
 
-                // Dessiner l'échiquier en 3D avec une épaisseur uniforme
-                float thickness = 0.4f; // Épaisseur des cases
-                for (int i = 0; i < 8; ++i) {
-                    for (int j = 0; j < 8; ++j) {
-                        glPushMatrix();
-
-                        // Positionner chaque cube
-                        glTranslatef(i - 3.5f, 0.0f, j - 3.5f); // Positionner sur la grille
-                        glScalef(1.0f, thickness, 1.0f); // Appliquer l'échelle uniforme
-
-                        // Déterminer la couleur de la case
-                        ImVec4 color = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
-                        drawCube(color); // Dessiner un cube avec la couleur correspondante
-
-                        glPopMatrix();
-                    }
-                }
-
-                // Dessiner les bords autour du plateau
-                float borderThickness = 0.1f; // Épaisseur des bords
-                ImVec4 borderColor = ImVec4{0.2f, 0.2f, 0.2f, 1.f}; // Couleur des bords (gris foncé)
-
-                // Dessiner les bords horizontaux
-                for (int i = 0; i < 8; ++i) {
-                    glPushMatrix();
-                    glTranslatef(i - 3.5f, -0.05f, -4.1f); // Bord supérieur
-                    glScalef(1.0f, borderThickness, 0.2f); // Ajuster l'échelle
-                    drawCube(borderColor);
-                    glPopMatrix();
-
-                    glPushMatrix();
-                    glTranslatef(i - 3.5f, -0.05f, 4.1f); // Bord inférieur
-                    glScalef(1.0f, borderThickness, 0.2f); // Ajuster l'échelle
-                    drawCube(borderColor);
-                    glPopMatrix();
-                }
-
-                // Dessiner les bords verticaux
-                for (int j = 0; j < 8; ++j) {
-                    glPushMatrix();
-                    glTranslatef(-4.1f, -0.05f, j - 3.5f); // Bord gauche
-                    glScalef(0.2f, borderThickness, 1.0f); // Ajuster l'échelle
-                    drawCube(borderColor);
-                    glPopMatrix();
-
-                    glPushMatrix();
-                    glTranslatef(4.1f, -0.05f, j - 3.5f); // Bord droit
-                    glScalef(0.2f, borderThickness, 1.0f); // Ajuster l'échelle
-                    drawCube(borderColor);
-                    glPopMatrix();
-                }
+                drawTiles();
+                drawBorders();
 
                 ImGui::PopStyleVar();
                 ImGui::End(); },
