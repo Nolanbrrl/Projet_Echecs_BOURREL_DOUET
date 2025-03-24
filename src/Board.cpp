@@ -268,7 +268,6 @@ void drawCube(const ImVec4& color)
     glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-// Fonction auxiliaire pour dessiner les tuiles
 void Board::drawTiles()
 {
     float thickness = 0.4f;
@@ -289,7 +288,6 @@ void Board::drawTiles()
     }
 }
 
-// Fonction auxiliaire pour dessiner les bordures
 void Board::drawBorders()
 {
     float  borderThickness = 0.1f;
@@ -310,7 +308,6 @@ void Board::drawBorders()
     }
 }
 
-// Fonction auxiliaire pour dessiner un cube de bordure
 void Board::drawBorderCube(float x, float y, float z, float scaleX, float scaleY, float scaleZ, const ImVec4& color)
 {
     glPushMatrix();
