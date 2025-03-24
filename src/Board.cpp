@@ -18,16 +18,42 @@
 #include "glimac/Program.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
+bool  isTopView          = false;
+bool  isTransitioning    = false; // Indique si une transition est en cours
+float transitionProgress = 0.0f;  // Progression de la transition (entre 0.0 et 1.0)
+
+glm::vec3 currentCameraPos = glm::vec3(0.0f, 10.0f, 10.0f); // Position actuelle de la caméra
+glm::vec3 targetCameraPos  = glm::vec3(0.0f, 10.0f, 10.0f); // Position cible de la caméra
+glm::vec3 currentCameraUp  = glm::vec3(0.0f, 1.0f, 0.0f);   // Orientation actuelle de la caméra
+glm::vec3 targetCameraUp   = glm::vec3(0.0f, 1.0f, 0.0f);   // Orientation cible de la caméra
+
 void setupCamera()
 {
+    // Si une transition est en cours, interpoler entre les positions
+    if (isTransitioning)
+    {
+        transitionProgress += 0.02f; // Ajustez la vitesse de transition ici
+        if (transitionProgress >= 1.0f)
+        {
+            transitionProgress = 1.0f;
+            isTransitioning    = false; // Fin de la transition
+        }
+
+        // Interpolation linéaire (LERP) pour la position
+        currentCameraPos = glm::mix(currentCameraPos, targetCameraPos, transitionProgress);
+
+        // Interpolation linéaire (LERP) pour l'orientation "up"
+        currentCameraUp = glm::mix(currentCameraUp, targetCameraUp, transitionProgress);
+    }
+
     // Matrice de projection en perspective
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
 
-    // Matrice de vue (position et orientation de la caméra)
+    // Matrice de vue
     glm::mat4 view = glm::lookAt(
-        glm::vec3(0.0f, 10.0f, 10.0f), // Position de la caméra
-        glm::vec3(0.0f, 0.0f, 0.0f),   // Point que la caméra regarde
-        glm::vec3(0.0f, 1.0f, 0.0f)    // Vecteur "up" (orientation de la caméra)
+        currentCameraPos,            // Position interpolée de la caméra
+        glm::vec3(0.0f, 0.0f, 0.0f), // Point que la caméra regarde (centre du plateau)
+        currentCameraUp              // Orientation interpolée de la caméra
     );
 
     // Charger les matrices dans OpenGL
@@ -36,6 +62,26 @@ void setupCamera()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(view));
+}
+
+void handleKeyboardInput()
+{
+    if (ImGui::IsKeyPressed(ImGuiKey_A) && !isTransitioning)
+    {
+        // Passer à la vue du dessus
+        targetCameraPos    = glm::vec3(0.0f, 20.0f, 0.0f);
+        targetCameraUp     = glm::vec3(0.0f, 0.0f, -1.0f);
+        isTransitioning    = true;
+        transitionProgress = 0.0f;
+    }
+    if (ImGui::IsKeyPressed(ImGuiKey_Z) && !isTransitioning)
+    {
+        // Revenir à la vue actuelle
+        targetCameraPos    = glm::vec3(0.0f, 10.0f, 10.0f);
+        targetCameraUp     = glm::vec3(0.0f, 1.0f, 0.0f);
+        isTransitioning    = true;
+        transitionProgress = 0.0f;
+    }
 }
 
 Board::Board()
@@ -260,17 +306,21 @@ void Board::draw(int argc, char** argv)
                 glClearColor(0.9f, 0.9f, 0.9f, 1.00f); // Fond gris clair
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Nettoyer le Z-buffer
 
+                // Gérer les entrées clavier
+                handleKeyboardInput();
+
                 // Configurer la caméra
                 setupCamera();
 
-                // Dessiner l'échiquier en 3D
+                // Dessiner l'échiquier en 3D avec une épaisseur uniforme
+                float thickness = 0.4f; // Épaisseur des cases
                 for (int i = 0; i < 8; ++i) {
                     for (int j = 0; j < 8; ++j) {
                         glPushMatrix();
 
                         // Positionner chaque cube
                         glTranslatef(i - 3.5f, 0.0f, j - 3.5f); // Positionner sur la grille
-                        glScalef(1.0f, 0.1f, 1.0f); // Réduire la hauteur des cubes
+                        glScalef(1.0f, thickness, 1.0f); // Appliquer l'échelle uniforme
 
                         // Déterminer la couleur de la case
                         ImVec4 color = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
@@ -278,6 +328,40 @@ void Board::draw(int argc, char** argv)
 
                         glPopMatrix();
                     }
+                }
+
+                // Dessiner les bords autour du plateau
+                float borderThickness = 0.1f; // Épaisseur des bords
+                ImVec4 borderColor = ImVec4{0.2f, 0.2f, 0.2f, 1.f}; // Couleur des bords (gris foncé)
+
+                // Dessiner les bords horizontaux
+                for (int i = 0; i < 8; ++i) {
+                    glPushMatrix();
+                    glTranslatef(i - 3.5f, -0.05f, -4.1f); // Bord supérieur
+                    glScalef(1.0f, borderThickness, 0.2f); // Ajuster l'échelle
+                    drawCube(borderColor);
+                    glPopMatrix();
+
+                    glPushMatrix();
+                    glTranslatef(i - 3.5f, -0.05f, 4.1f); // Bord inférieur
+                    glScalef(1.0f, borderThickness, 0.2f); // Ajuster l'échelle
+                    drawCube(borderColor);
+                    glPopMatrix();
+                }
+
+                // Dessiner les bords verticaux
+                for (int j = 0; j < 8; ++j) {
+                    glPushMatrix();
+                    glTranslatef(-4.1f, -0.05f, j - 3.5f); // Bord gauche
+                    glScalef(0.2f, borderThickness, 1.0f); // Ajuster l'échelle
+                    drawCube(borderColor);
+                    glPopMatrix();
+
+                    glPushMatrix();
+                    glTranslatef(4.1f, -0.05f, j - 3.5f); // Bord droit
+                    glScalef(0.2f, borderThickness, 1.0f); // Ajuster l'échelle
+                    drawCube(borderColor);
+                    glPopMatrix();
                 }
 
                 ImGui::PopStyleVar();
