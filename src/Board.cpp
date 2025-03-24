@@ -2,8 +2,9 @@
 #include <glad/glad.h>
 #include <imgui.h>
 #include <algorithm>
-#include <cstddef>
-#include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <memory>
 #include "Pieces/Cavalier.hpp"
@@ -15,8 +16,27 @@
 #include "Pieces/Tour.hpp"
 #include "glimac/FilePath.hpp"
 #include "glimac/Program.hpp"
-#include "glimac/Sphere.hpp"
 #include "quick_imgui/quick_imgui.hpp"
+
+void setupCamera()
+{
+    // Matrice de projection en perspective
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+
+    // Matrice de vue (position et orientation de la caméra)
+    glm::mat4 view = glm::lookAt(
+        glm::vec3(0.0f, 10.0f, 10.0f), // Position de la caméra
+        glm::vec3(0.0f, 0.0f, 0.0f),   // Point que la caméra regarde
+        glm::vec3(0.0f, 1.0f, 0.0f)    // Vecteur "up" (orientation de la caméra)
+    );
+
+    // Charger les matrices dans OpenGL
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(glm::value_ptr(projection));
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixf(glm::value_ptr(view));
+}
 
 Board::Board()
     : pieceMap{{
@@ -222,35 +242,12 @@ void Board::draw(int argc, char** argv)
             .init = [argv]() {
                 std::cout << "Init\n";
                 glimac::FilePath applicationPath(argv[0]);
-                glimac::Program program =
-                    loadProgram(applicationPath.dirPath() + "/src/Shaders/vertex_shader.glsl",
-                                applicationPath.dirPath() + "/src/Shaders/fragment_shader.glsl");
+                glimac::Program  program =
+                    loadProgram(applicationPath.dirPath() + "/src/Shaders/vertex_shader.glsl", applicationPath.dirPath() + "/src/Shaders/fragment_shader.glsl");
                 program.use();
 
                 glEnable(GL_DEPTH_TEST); // Activer le test de profondeur
-
-                glGenBuffers(16, vbos);
-                glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-                glGenVertexArrays(16, vaos);
-                glBindVertexArray(vaos[0]);
-                const GLuint VERTEX_ATTR_POSITION = 0;
-                const GLuint VERTEX_ATTR_COLOR = 1;
-                glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-
-                glEnableVertexAttribArray(VERTEX_ATTR_POSITION);
-                glVertexAttribPointer(VERTEX_ATTR_POSITION, 3, GL_FLOAT, GL_FALSE,
-                                      sizeof(glimac::ShapeVertex), 0);
-
-                glEnableVertexAttribArray(VERTEX_ATTR_COLOR);
-                glVertexAttribPointer(VERTEX_ATTR_COLOR, 2, GL_FLOAT, GL_FALSE,
-                                      sizeof(glimac::ShapeVertex),
-                                      (const GLvoid *)(offsetof(glimac::ShapeVertex, texCoords)));
-
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                glBindVertexArray(0); },
+            },
             .loop = [this]() {
                 ImGui::ShowDemoWindow();
 
@@ -262,26 +259,29 @@ void Board::draw(int argc, char** argv)
 
                 glClearColor(0.9f, 0.9f, 0.9f, 1.00f); // Fond gris clair
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Nettoyer le Z-buffer
-                glBindVertexArray(vaos[0]);
 
+                // Configurer la caméra
+                setupCamera();
+
+                // Dessiner l'échiquier en 3D
                 for (int i = 0; i < 8; ++i) {
                     for (int j = 0; j < 8; ++j) {
                         glPushMatrix();
-                        glTranslatef(i - 3.5f, j - 3.5f, 0.0f);
 
+                        // Positionner chaque cube
+                        glTranslatef(i - 3.5f, 0.0f, j - 3.5f); // Positionner sur la grille
+                        glScalef(1.0f, 0.1f, 1.0f); // Réduire la hauteur des cubes
+
+                        // Déterminer la couleur de la case
                         ImVec4 color = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
-                        drawCube(color);
+                        drawCube(color); // Dessiner un cube avec la couleur correspondante
 
                         glPopMatrix();
                     }
                 }
 
-                glBindVertexArray(0);
-
                 ImGui::PopStyleVar();
                 ImGui::End(); },
         }
     );
-    glDeleteBuffers(16, vbos);
-    glDeleteVertexArrays(16, vaos);
 }
