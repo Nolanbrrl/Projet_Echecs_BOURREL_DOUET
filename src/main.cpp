@@ -1,6 +1,7 @@
 #include <imgui.h>
 #include <glm/glm.hpp>
 #include <iostream>
+#include "Board.hpp"
 #include "Camera.hpp"
 #include "Model3D.hpp"
 #include "Shader.hpp"
@@ -14,6 +15,7 @@ int main()
     int           window_height = 720;
     glmax::Shader shader;
     glmax::Camera camera{true};
+    Board         board;
     //
     Model3D model;
 
@@ -48,7 +50,22 @@ int main()
                 shader.set_uniform_3fv("viewPos", camera.get_position());
                 
                 //MODEL RENDER
-                model.render(shader); },
+                model.render(shader);
+
+                // Additional ImGui and rendering logic
+                ImGui::ShowDemoWindow();
+
+                ImGui::Begin("Plateau");
+                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+                board.drawBoard();
+                board.checkGameOver();
+
+                board.drawTiles();
+                board.drawBorders();
+
+                ImGui::PopStyleVar();
+                ImGui::End(); },
             .key_callback             = [&](int key, int scancode, int action, int mods) { std::cout << "Key: " << key << " Scancode: " << scancode << " Action: " << action << " Mods: " << mods << '\n'; },
             .mouse_button_callback    = [&](int button, int action, int mods) { std::cout << "Button: " << button << " Action: " << action << " Mods: " << mods << '\n'; },
             .cursor_position_callback = [&](double xpos, double ypos) { camera.track_ball_move_callback(xpos, ypos); },
