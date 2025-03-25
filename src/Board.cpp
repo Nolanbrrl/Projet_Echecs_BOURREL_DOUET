@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <memory>
+#include "ImportObj.hpp"
 #include "Pieces/Cavalier.hpp"
 #include "Pieces/Fou.hpp"
 #include "Pieces/Piece.hpp"

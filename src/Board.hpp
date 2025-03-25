@@ -5,6 +5,8 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <unordered_map>
+#include "ImportObj.hpp"
 #include "Pieces/Piece.hpp"
 
 class Board {
