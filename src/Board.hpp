@@ -11,6 +11,10 @@
 class Board {
 private:
     std::array<std::array<int, 8>, 8> tileMap;
+    bool                              promo_en_cours = false;
+    Position                          pos_pion_a_promouvoir;
+
+    void gerer_promotion();
 
 public:
     Board();
