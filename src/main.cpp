@@ -22,6 +22,10 @@ int main()
     Model3D modelPion;  // blanc
     Model3D modelPion2; // noir
     Model3D modelPlateau;
+    Model3D modelTour;
+    Model3D modelTour2;
+    Model3D modelCavalier;
+    Model3D modelCavalier2;
     quick_imgui::loop(
         "Quick ImGui",
         {
@@ -30,9 +34,17 @@ int main()
             shader.load_shader("model.vs.glsl", "model.fs.glsl");
             modelPion.load_mesh("pawn/pawn.obj", "pawn");
             modelPion2.load_mesh("pawn/pawn2.obj", "pawn");
+            modelTour.load_mesh("rook/tower.obj", "rook");
+            modelTour2.load_mesh("rook/tower2.obj", "rook");
+            modelCavalier.load_mesh("knight/cavalier.obj", "knight");
+            modelCavalier2.load_mesh("knight/cavalier2.obj", "knight");
             modelPlateau.load_mesh("board/board.obj", "board");
             modelPion.setup_buffers();
             modelPion2.setup_buffers();
+            modelTour.setup_buffers();
+            modelTour2.setup_buffers();
+            modelCavalier.setup_buffers();
+            modelCavalier2.setup_buffers();
             modelPlateau.setup_buffers(); },
             .loop                     = [&]() {
                 glClearColor(0.847f, 0.82f, 0.929f, 1.f);
@@ -179,7 +191,54 @@ int main()
                 shader.set_uniform_matrix_4fv("model", model_matrix9);
 
                 modelPion2.render(shader);
+
+                 // TOUR blanche
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix2); 
             
+                modelTour.render(shader);
+
+                // tour 2
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix9); 
+            
+                modelTour.render(shader);
+
+                // TOUR noire
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix2); 
+            
+                modelTour2.render(shader);
+
+                // tour 2
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix9); 
+            
+                modelTour2.render(shader);
+            
+                // Cavalier blanc
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix2); 
+            
+                modelCavalier.render(shader);
+
+                // cavalier 2
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix7); 
+            
+                modelCavalier.render(shader);
+
+                // Cavalier noir
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix2); 
+            
+                modelCavalier2.render(shader);
+
+                // cavalier 2
+                shader.use();
+                shader.set_uniform_matrix_4fv("model", model_matrix7); 
+            
+                modelCavalier2.render(shader);
                 ImGui::ShowDemoWindow();
             
                 ImGui::Begin("Plateau");
