@@ -32,7 +32,4 @@ public:
     void                                                 resetBoard();
     Color                                                tour_actuel = Color::blanc;
     std::optional<Position>                              pion_pour_prise_en_passant;
-    void                                                 drawBorders();
-    void                                                 drawTiles();
-    void                                                 drawBorderCube(float x, float y, float z, float scaleX, float scaleY, float scaleZ, const ImVec4& color);
 };

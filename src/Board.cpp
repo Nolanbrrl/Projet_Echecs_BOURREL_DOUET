@@ -177,88 +177,6 @@ void Board::checkGameOver()
     }
 }
 
-GLuint vaos[16];
-
-GLuint vbos[16];
-
-void drawCube(const ImVec4& color)
-{
-    static const GLfloat vertices[] = {
-        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f,
-        -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
-        -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
-        -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f,
-        0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f,
-        -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f // commentaire de remise a la ligne
-    };
-
-    static const GLuint indices[] = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4,
-        8, 9, 10, 10, 11, 8,
-        12, 13, 14, 14, 15, 12,
-        16, 17, 18, 18, 19, 16,
-        20, 21, 22, 22, 23, 20 // commentaire de remise a la ligne
-    };
-
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-
-    glColor4f(color.x, color.y, color.z, color.w);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, indices);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-}
-
-void Board::drawTiles()
-{
-    float thickness = 0.4f;
-
-    for (int i = 0; i < 8; ++i)
-    {
-        for (int j = 0; j < 8; ++j)
-        {
-            glPushMatrix();
-            glTranslatef(i - 3.5f, 0.0f, j - 3.5f); // Positionner sur la grille
-            glScalef(1.0f, thickness, 1.0f);        // Appliquer l'échelle uniforme
-
-            ImVec4 color = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
-            drawCube(color);
-
-            glPopMatrix();
-        }
-    }
-}
-
-void Board::drawBorders()
-{
-    float  borderThickness = 0.1f;
-    ImVec4 borderColor     = ImVec4{0.01f, 0.01f, 0.01f, 1.f};
-
-    // Bords horizontaux
-    for (int i = 0; i < 8; ++i)
-    {
-        drawBorderCube(i - 3.5f, -0.05f, -4.1f, 1.3f, borderThickness, 0.2f, borderColor); // Bord supérieur
-        drawBorderCube(i - 3.5f, -0.05f, 4.1f, 1.3f, borderThickness, 0.2f, borderColor);  // Bord inférieur
-    }
-
-    // Bords verticaux
-    for (int j = 0; j < 8; ++j)
-    {
-        drawBorderCube(-4.1f, -0.05f, j - 3.5f, 0.2f, borderThickness, 1.3f, borderColor); // Bord gauche
-        drawBorderCube(4.1f, -0.05f, j - 3.5f, 0.2f, borderThickness, 1.3f, borderColor);  // Bord droit
-    }
-}
-
-void Board::drawBorderCube(float x, float y, float z, float scaleX, float scaleY, float scaleZ, const ImVec4& color)
-{
-    glPushMatrix();
-    glTranslatef(x, y, z);
-    glScalef(scaleX, scaleY, scaleZ);
-    drawCube(color);
-    glPopMatrix();
-}
-
 // void Board::draw(int argc, char** argv)
 // {
 //     quick_imgui::loop(
@@ -294,4 +212,112 @@ void Board::drawBorderCube(float x, float y, float z, float scaleX, float scaleY
 //                 ImGui::End(); },
 //         }
 //     );
+// }
+
+// GLuint vaos[16];
+
+// GLuint vbos[16];
+
+// void drawCube(const ImVec4& color)
+// {
+//     static const GLfloat vertices[] = {
+//         -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f,
+//         -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
+//         -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f,
+//         -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f,
+//         0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f,
+//         -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f // commentaire de remise a la ligne
+//     };
+
+//     static const GLuint indices[] = {
+//         0, 1, 2, 2, 3, 0,
+//         4, 5, 6, 6, 7, 4,
+//         8, 9, 10, 10, 11, 8,
+//         12, 13, 14, 14, 15, 12,
+//         16, 17, 18, 18, 19, 16,
+//         20, 21, 22, 22, 23, 20 // commentaire de remise a la ligne
+//     };
+
+//     glEnableClientState(GL_VERTEX_ARRAY);
+//     glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+//     glColor4f(color.x, color.y, color.z, color.w);
+//     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, indices);
+
+//     glDisableClientState(GL_VERTEX_ARRAY);
+// }
+
+// void drawTiles(const glm::mat4& projection)
+// {
+//     float thickness = 0.4f;
+
+//     // Préparer les matrices communes
+//     shader.set_uniform_matrix_4fv("view", camera.get_view_matrix());
+//     shader.set_uniform_matrix_4fv("projection", projection);
+
+//     for (int i = 0; i < 8; ++i)
+//     {
+//         for (int j = 0; j < 8; ++j)
+//         {
+//             glm::mat4 model = glm::mat4(1.0f);
+//             model           = glm::translate(model, glm::vec3(i - 3.5f, 0.0f, j - 3.5f)); // Positionner sur la grille
+//             model           = glm::scale(model, glm::vec3(1.0f, thickness, 1.0f));        // Appliquer l'échelle uniforme
+
+//             shader.set_uniform_matrix_4fv("model", model);
+
+//             ImVec4 color = (tileMap[i][j] == 0) ? ImVec4{0.82f, 0.54f, 0.27f, 1.f} : ImVec4{1.f, 0.81f, 0.62f, 1.f};
+//             drawCube(color);
+//         }
+//     }
+// }
+
+// void drawBorders(const glm::mat4& projection)
+// {
+//     float  borderThickness = 0.1f;
+//     ImVec4 borderColor     = ImVec4{0.01f, 0.01f, 0.01f, 1.f};
+
+//     // Préparer les matrices communes
+//     shader.set_uniform_matrix_4fv("view", camera.get_view_matrix());
+//     shader.set_uniform_matrix_4fv("projection", projection);
+
+//     // Bords horizontaux
+//     for (int i = 0; i < 8; ++i)
+//     {
+//         glm::mat4 model = glm::mat4(1.0f);
+//         model           = glm::translate(model, glm::vec3(i - 3.5f, -0.05f, -4.1f));
+//         model           = glm::scale(model, glm::vec3(1.3f, borderThickness, 0.2f));
+//         shader.set_uniform_matrix_4fv("model", model);
+//         drawCube(borderColor);
+
+//         model = glm::mat4(1.0f);
+//         model = glm::translate(model, glm::vec3(i - 3.5f, -0.05f, 4.1f));
+//         model = glm::scale(model, glm::vec3(1.3f, borderThickness, 0.2f));
+//         shader.set_uniform_matrix_4fv("model", model);
+//         drawCube(borderColor);
+//     }
+
+//     // Bords verticaux
+//     for (int j = 0; j < 8; ++j)
+//     {
+//         glm::mat4 model = glm::mat4(1.0f);
+//         model           = glm::translate(model, glm::vec3(-4.1f, -0.05f, j - 3.5f));
+//         model           = glm::scale(model, glm::vec3(0.2f, borderThickness, 1.3f));
+//         shader.set_uniform_matrix_4fv("model", model);
+//         drawCube(borderColor);
+
+//         model = glm::mat4(1.0f);
+//         model = glm::translate(model, glm::vec3(4.1f, -0.05f, j - 3.5f));
+//         model = glm::scale(model, glm::vec3(0.2f, borderThickness, 1.3f));
+//         shader.set_uniform_matrix_4fv("model", model);
+//         drawCube(borderColor);
+//     }
+// }
+
+// void drawBorderCube(float x, float y, float z, float scaleX, float scaleY, float scaleZ, const ImVec4& color)
+// {
+//     glPushMatrix();
+//     glTranslatef(x, y, z);
+//     glScalef(scaleX, scaleY, scaleZ);
+//     drawCube(color);
+//     glPopMatrix();
 // }
