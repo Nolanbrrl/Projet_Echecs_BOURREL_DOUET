@@ -19,7 +19,8 @@ int main()
     glmax::Camera camera{true};
     Board         board;
     //
-    Model3D modelPion;
+    Model3D modelPion;  // blanc
+    Model3D modelPion2; // noir
     Model3D modelPlateau;
     quick_imgui::loop(
         "Quick ImGui",
@@ -28,6 +29,7 @@ int main()
             std::cout << "Init\n";
             shader.load_shader("model.vs.glsl", "model.fs.glsl");
             modelPion.load_mesh("pawn/pawn.obj", "pawn");
+            modelPion2.load_mesh("pawn/pawn2.obj", "pawn");
             modelPlateau.load_mesh("board/board.obj", "board");
             modelPion.setup_buffers();
             modelPlateau.setup_buffers(); },
@@ -94,6 +96,30 @@ int main()
                 glm::mat4 model_matrix6 = glm::mat4(1.0f);
                 model_matrix6 = glm::scale(model_matrix6, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix6, glm::vec3(0.0f, 0.0f, -24.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix6);
+                                
+                modelPion.render(shader);
+
+                // pion 6
+                shader.use();
+                glm::mat4 model_matrix7 = glm::mat4(1.0f);
+                model_matrix7 = glm::scale(model_matrix7, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix7, glm::vec3(0.0f, 0.0f, -30.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
+                shader.set_uniform_matrix_4fv("model", model_matrix7);
+                                
+                modelPion.render(shader);
+
+                // pion 7
+                shader.use();
+                glm::mat4 model_matrix8 = glm::mat4(1.0f);
+                model_matrix8 = glm::scale(model_matrix8, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix8, glm::vec3(0.0f, 0.0f, -36.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
+                shader.set_uniform_matrix_4fv("model", model_matrix8);
+                                
+                modelPion.render(shader);
+
+                // pion 8
+                shader.use();
+                glm::mat4 model_matrix9 = glm::mat4(1.0f);
+                model_matrix9 = glm::scale(model_matrix9, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix9, glm::vec3(0.0f, 0.0f, -42.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
+                shader.set_uniform_matrix_4fv("model", model_matrix9);
                                 
                 modelPion.render(shader);
             
