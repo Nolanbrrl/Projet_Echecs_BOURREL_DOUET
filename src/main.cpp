@@ -8,7 +8,6 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
 // Utility function to render a model with a specific transformation matrix
@@ -27,9 +26,9 @@ int main()
     glmax::Camera camera{true};
     Board         board;
 
-    Model3D modelPion, modelPion2, modelPlateau, modelTour, modelTour2;
-    Model3D modelCavalier, modelCavalier2, modelFou, modelFou2;
-    Model3D modelRoi, modelRoi2, modelReine, modelReine2;
+    Model3D whitePawnModel, blackPawnModel, boardModel, whiteRookModel, blackRookModel;
+    Model3D whiteKnightModel, blackKnightModel, whiteBishopModel, blackBishopModel;
+    Model3D whiteKingModel, blackKingModel, whiteQueenModel, blackQueenModel;
 
     quick_imgui::loop(
         "Quick ImGui",
@@ -37,35 +36,35 @@ int main()
             .init                     = [&]() {
                 std::cout << "Init\n";
                 shader.load_shader("model.vs.glsl", "model.fs.glsl");
-
+            
                 // Load and setup models
-                modelPion.load_mesh("pawn/pawn.obj", "pawn");
-                modelPion2.load_mesh("pawn/pawn2.obj", "pawn");
-                modelTour.load_mesh("rook/tower.obj", "rook");
-                modelTour2.load_mesh("rook/tower2.obj", "rook");
-                modelCavalier.load_mesh("knight/cavalier.obj", "knight");
-                modelCavalier2.load_mesh("knight/cavalier2.obj", "knight");
-                modelFou.load_mesh("bishop/fou.obj", "bishop");
-                modelFou2.load_mesh("bishop/fou2.obj", "bishop");
-                modelPlateau.load_mesh("board/board.obj", "board");
-                modelRoi.load_mesh("king/king.obj", "king");
-                modelRoi2.load_mesh("king/king2.obj", "king");
-                modelReine.load_mesh("queen/queen.obj", "queen");
-                modelReine2.load_mesh("queen/queen2.obj", "queen");
-
-                modelPion.setup_buffers();
-                modelPion2.setup_buffers();
-                modelTour.setup_buffers();
-                modelTour2.setup_buffers();
-                modelCavalier.setup_buffers();
-                modelCavalier2.setup_buffers();
-                modelFou.setup_buffers();
-                modelFou2.setup_buffers();
-                modelRoi.setup_buffers();
-                modelRoi2.setup_buffers();
-                modelReine.setup_buffers();
-                modelReine2.setup_buffers();
-                modelPlateau.setup_buffers(); },
+                whitePawnModel.load_mesh("pawn/pawn.obj", "pawn");
+                blackPawnModel.load_mesh("pawn/pawn2.obj", "pawn");
+                whiteRookModel.load_mesh("rook/tower.obj", "rook");
+                blackRookModel.load_mesh("rook/tower2.obj", "rook");
+                whiteKnightModel.load_mesh("knight/cavalier.obj", "knight");
+                blackKnightModel.load_mesh("knight/cavalier2.obj", "knight");
+                whiteBishopModel.load_mesh("bishop/fou.obj", "bishop");
+                blackBishopModel.load_mesh("bishop/fou2.obj", "bishop");
+                boardModel.load_mesh("board/board.obj", "board");
+                whiteKingModel.load_mesh("king/king.obj", "king");
+                blackKingModel.load_mesh("king/king2.obj", "king");
+                whiteQueenModel.load_mesh("queen/queen.obj", "queen");
+                blackQueenModel.load_mesh("queen/queen2.obj", "queen");
+            
+                whitePawnModel.setup_buffers();
+                blackPawnModel.setup_buffers();
+                whiteRookModel.setup_buffers();
+                blackRookModel.setup_buffers();
+                whiteKnightModel.setup_buffers();
+                blackKnightModel.setup_buffers();
+                whiteBishopModel.setup_buffers();
+                blackBishopModel.setup_buffers();
+                whiteKingModel.setup_buffers();
+                blackKingModel.setup_buffers();
+                whiteQueenModel.setup_buffers();
+                blackQueenModel.setup_buffers();
+                boardModel.setup_buffers(); },
             .loop                     = [&]() {
                 glClearColor(0.847f, 0.82f, 0.929f, 1.f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -82,48 +81,47 @@ int main()
                 shader.set_uniform_3fv("viewPos", camera.get_position());
 
                 // Render the board
-                glm::mat4 positionDeBase = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f));
-                renderModel(shader, modelPlateau, positionDeBase);
+                glm::mat4 basePosition = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f));
+                renderModel(shader, boardModel, basePosition);
 
                 // Render white pawns
                 for (int i = 0; i < 8; ++i) {
                     glm::mat4 transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                                          glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f * i));
-                    renderModel(shader, modelPion, transform);
+                                        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f * i));
+                    renderModel(shader, whitePawnModel, transform);
                 }
 
                 // Render black pawns
                 for (int i = 0; i < 8; ++i) {
                     glm::mat4 transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                                          glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f * i));
-                    renderModel(shader, modelPion2, transform);
+                                        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f * i));
+                    renderModel(shader, blackPawnModel, transform);
                 }
 
-                renderModel(shader, modelTour, positionDeBase); // White rook
-                renderModel(shader, modelTour, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                                                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -42.0f))); // White rook
-                renderModel(shader, modelTour2, positionDeBase); // Black rook
-                renderModel(shader, modelTour2, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -42.0f))); // Black rook
-                renderModel(shader, modelCavalier, positionDeBase); // White knight
-                renderModel(shader, modelCavalier, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                                                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f))); // White knight
-                renderModel(shader, modelCavalier2, positionDeBase); // Black knight
-                renderModel(shader, modelCavalier2, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f))); // Black knight
-                renderModel(shader, modelFou, positionDeBase); // White bishop
-                renderModel(shader, modelFou, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                                                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -18.0f))); // White bishop
-                renderModel(shader, modelFou2, positionDeBase); // Black bishop
-                renderModel(shader, modelFou2, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -18.0f))); // Black bishop
-                renderModel(shader, modelReine, positionDeBase); // White queen
-                renderModel(shader, modelReine2, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                                                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 6.0f))); // Black queen
-                renderModel(shader, modelRoi, positionDeBase); // White king
-                renderModel(shader, modelRoi2, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
-                                                glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f))); // Black king
-
+                renderModel(shader, whiteRookModel, basePosition);
+                renderModel(shader, whiteRookModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -42.0f))); 
+                renderModel(shader, blackRookModel, basePosition);
+                renderModel(shader, blackRookModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -42.0f))); 
+                renderModel(shader, whiteKnightModel, basePosition);
+                renderModel(shader, whiteKnightModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f)));
+                renderModel(shader, blackKnightModel, basePosition);
+                renderModel(shader, blackKnightModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f))); 
+                renderModel(shader, whiteBishopModel, basePosition);
+                renderModel(shader, whiteBishopModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -18.0f))); 
+                renderModel(shader, blackBishopModel, basePosition);
+                renderModel(shader, blackBishopModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -18.0f))); 
+                renderModel(shader, whiteQueenModel, basePosition);
+                renderModel(shader, blackQueenModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 6.0f))); 
+                renderModel(shader, whiteKingModel, basePosition);
+                renderModel(shader, blackKingModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f)));
                 // ImGui interface
                 ImGui::ShowDemoWindow();
                 ImGui::Begin("Plateau");
