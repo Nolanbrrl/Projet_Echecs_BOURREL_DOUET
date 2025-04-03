@@ -1,3 +1,4 @@
+#pragma once
 #include <imgui.h>
 #include <glm/glm.hpp>
 #include <iostream>
@@ -10,12 +11,21 @@
 #include "glm/fwd.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
-// Utility function to render a model with a specific transformation matrix
+bool isCKeyPressed = false;
+
 void renderModel(glmax::Shader& shader, Model3D& model, const glm::mat4& transform)
 {
     shader.use();
     shader.set_uniform_matrix_4fv("model", transform);
     model.render(shader);
+}
+
+void handleKeyEvent(int key, bool isPressed)
+{
+    if (key == 'C' || key == 'c')
+    {
+        isCKeyPressed = isPressed;
+    }
 }
 
 int main()
@@ -130,10 +140,18 @@ int main()
                 board.checkGameOver();
                 ImGui::PopStyleVar();
                 ImGui::End(); },
-            .key_callback             = [&](int key, int scancode, int action, int mods) { std::cout << "Key: " << key << " Scancode: " << scancode << " Action: " << action << " Mods: " << mods << '\n'; },
-            .mouse_button_callback    = [&](int button, int action, int mods) { std::cout << "Button: " << button << " Action: " << action << " Mods: " << mods << '\n'; },
-            .cursor_position_callback = [&](double xpos, double ypos) { camera.track_ball_move_callback(xpos, ypos); },
-            .scroll_callback          = [&](double xoffset, double yoffset) { camera.process_scroll(yoffset); },
+            .key_callback             = [&](int key, int scancode, int action, int mods) {
+                    bool isPressed = (action != 0); 
+                    handleKeyEvent(key, isPressed);
+                    std::cout << "Key: " << key << " Scancode: " << scancode << " Action: " << action << " Mods: " << mods << '\n'; },
+            .cursor_position_callback = [&](double xpos, double ypos) {
+                    if (isCKeyPressed) { 
+                        camera.track_ball_move_callback(xpos, ypos);
+                    } },
+            .scroll_callback          = [&](double xoffset, double yoffset) {
+                    if (isCKeyPressed) { 
+                        camera.process_scroll(yoffset);
+                    } },
             .window_size_callback     = [&](int width, int height) { std::cout << "Resized: " << width << ' ' << height << '\n'; },
         }
     );
