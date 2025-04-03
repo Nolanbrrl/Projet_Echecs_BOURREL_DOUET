@@ -41,6 +41,7 @@ int main()
             
                 glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(window_width) / static_cast<float>(window_height), 0.1f, 100.0f);
             
+                // PLATEAU
                 shader.use();
                 glm::mat4 model_matrix = glm::mat4(1.0f);
                 model_matrix = glm::scale(model_matrix, glm::vec3(0.2f, 0.2f, 0.2f));
@@ -54,17 +55,11 @@ int main()
             
                 modelPlateau.render(shader);
 
-                // séparation entre les modèles
+                // PIONS BLANCS
                 shader.use();
                 glm::mat4 model_matrix2 = glm::mat4(1.0f);
                 model_matrix2 = glm::scale(model_matrix2, glm::vec3(0.2f, 0.2f, 0.2f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix2); //c'est la matrice model qui fait le deplacement scale et rotate
-                // shader.set_uniform_matrix_4fv("view", camera.get_view_matrix());
-                // shader.set_uniform_matrix_4fv("projection", projection); on supprime ces lignes car on a pas changé le shader
-            
-                // shader.set_uniform_3fv("lightPos", glm::vec3(5.0f, 5.0f, 5.0f));
-                // shader.set_uniform_3fv("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-                // shader.set_uniform_3fv("viewPos", camera.get_position());
             
                 modelPion.render(shader);
 
@@ -126,16 +121,13 @@ int main()
 
                 //Pion noir
                 shader.use();
-                glm::mat4 model_matrix10 = glm::mat4(1.0f);
-                model_matrix10           = glm::scale(model_matrix10, glm::vec3(0.2f, 0.2f, 0.2f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix10);                            // c'est la matrice model qui fait le deplacement scale et rotate
+                
+                shader.set_uniform_matrix_4fv("model", model_matrix2);                            // c'est la matrice model qui fait le deplacement scale et rotate
 
                 modelPion2.render(shader);
 
                 // pion 2
                 shader.use();
-                // glm::mat4 model_matrix3 = glm::mat4(1.0f);
-                // model_matrix3           = glm::scale(model_matrix3, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix3, glm::vec3(0.0f, 0.0f, -6.0f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix3);
 
                 modelPion2.render(shader);
