@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include "Mesh.hpp"
 #include "Shader.hpp"
 #include "buffers/EBO.hpp"
@@ -15,6 +16,7 @@ private:
     // single mesh
     glmax::Mesh m_mesh;
     //
+    std::vector<glm::mat4> m_model_matrices;
     // Buffers
     VAO m_vao;
     VBO m_vbo;
