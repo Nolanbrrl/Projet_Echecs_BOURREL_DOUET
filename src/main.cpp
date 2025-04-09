@@ -119,9 +119,8 @@ int main()
                                 
                 modelPion.render(shader);
 
-                //Pion noir
+                //PIONS NOIRS
                 shader.use();
-                
                 shader.set_uniform_matrix_4fv("model", model_matrix2);                            // c'est la matrice model qui fait le deplacement scale et rotate
 
                 modelPion2.render(shader);
@@ -134,48 +133,36 @@ int main()
 
                 // pion 3
                 shader.use();
-                // glm::mat4 model_matrix4 = glm::mat4(1.0f);
-                // model_matrix4           = glm::scale(model_matrix4, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix4, glm::vec3(0.0f, 0.0f, -12.0f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix4);
 
                 modelPion2.render(shader);
 
                 // pion 4
                 shader.use();
-                // glm::mat4 model_matrix5 = glm::mat4(1.0f);
-                // model_matrix5           = glm::scale(model_matrix5, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix5, glm::vec3(0.0f, 0.0f, -18.0f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix5);
 
                 modelPion2.render(shader);
 
                 // pion 5
                 shader.use();
-                // glm::mat4 model_matrix6 = glm::mat4(1.0f);
-                // model_matrix6           = glm::scale(model_matrix6, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix6, glm::vec3(0.0f, 0.0f, -24.0f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix6);
 
                 modelPion2.render(shader);
 
                 // pion 6
                 shader.use();
-                // glm::mat4 model_matrix7 = glm::mat4(1.0f);
-                // model_matrix7           = glm::scale(model_matrix7, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix7, glm::vec3(0.0f, 0.0f, -30.0f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix7);
 
                 modelPion2.render(shader);
 
                 // pion 7
                 shader.use();
-                // glm::mat4 model_matrix8 = glm::mat4(1.0f);
-                // model_matrix8           = glm::scale(model_matrix8, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix8, glm::vec3(0.0f, 0.0f, -36.0f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix8);
 
                 modelPion2.render(shader);
 
                 // pion 8
                 shader.use();
-                // glm::mat4 model_matrix9 = glm::mat4(1.0f);
-                // model_matrix9           = glm::scale(model_matrix9, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix9, glm::vec3(0.0f, 0.0f, -42.0f)); // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
                 shader.set_uniform_matrix_4fv("model", model_matrix9);
 
                 modelPion2.render(shader);
