@@ -1,3 +1,4 @@
+#pragma once
 #include <imgui.h>
 #include <glm/glm.hpp>
 #include <iostream>
@@ -8,8 +9,24 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include "quick_imgui/quick_imgui.hpp"
+
+bool isCKeyPressed = false;
+
+void renderModel(glmax::Shader& shader, Model3D& model, const glm::mat4& transform)
+{
+    shader.use();
+    shader.set_uniform_matrix_4fv("model", transform);
+    model.render(shader);
+}
+
+void handleKeyEvent(int key, bool isPressed)
+{
+    if (key == 'C' || key == 'c')
+    {
+        isCKeyPressed = isPressed;
+    }
+}
 
 int main()
 {
@@ -18,169 +35,123 @@ int main()
     glmax::Shader shader;
     glmax::Camera camera{true};
     Board         board;
-    //
-    Model3D modelPion;  // blanc
-    Model3D modelPion2; // noir
-    Model3D modelPlateau;
+
+    Model3D whitePawnModel, blackPawnModel, boardModel, whiteRookModel, blackRookModel;
+    Model3D whiteKnightModel, blackKnightModel, whiteBishopModel, blackBishopModel;
+    Model3D whiteKingModel, blackKingModel, whiteQueenModel, blackQueenModel;
+
     quick_imgui::loop(
         "Quick ImGui",
         {
-            .init                     = [&]() { 
-            std::cout << "Init\n";
-            shader.load_shader("model.vs.glsl", "model.fs.glsl");
-            modelPion.load_mesh("pawn/pawn.obj", "pawn");
-            modelPion2.load_mesh("pawn/pawn2.obj", "pawn");
-            modelPlateau.load_mesh("board/board.obj", "board");
-            modelPion.setup_buffers();
-            modelPion2.setup_buffers();
-            modelPlateau.setup_buffers(); },
+            .init                     = [&]() {
+                std::cout << "Init\n";
+                shader.load_shader("model.vs.glsl", "model.fs.glsl");
+            
+                // Load and setup models
+                whitePawnModel.load_mesh("pawn/pawn.obj", "pawn");
+                blackPawnModel.load_mesh("pawn/pawn2.obj", "pawn");
+                whiteRookModel.load_mesh("rook/tower.obj", "rook");
+                blackRookModel.load_mesh("rook/tower2.obj", "rook");
+                whiteKnightModel.load_mesh("knight/cavalier.obj", "knight");
+                blackKnightModel.load_mesh("knight/cavalier2.obj", "knight");
+                whiteBishopModel.load_mesh("bishop/fou.obj", "bishop");
+                blackBishopModel.load_mesh("bishop/fou2.obj", "bishop");
+                boardModel.load_mesh("board/board.obj", "board");
+                whiteKingModel.load_mesh("king/king.obj", "king");
+                blackKingModel.load_mesh("king/king2.obj", "king");
+                whiteQueenModel.load_mesh("queen/queen.obj", "queen");
+                blackQueenModel.load_mesh("queen/queen2.obj", "queen");
+            
+                whitePawnModel.setup_buffers();
+                blackPawnModel.setup_buffers();
+                whiteRookModel.setup_buffers();
+                blackRookModel.setup_buffers();
+                whiteKnightModel.setup_buffers();
+                blackKnightModel.setup_buffers();
+                whiteBishopModel.setup_buffers();
+                blackBishopModel.setup_buffers();
+                whiteKingModel.setup_buffers();
+                blackKingModel.setup_buffers();
+                whiteQueenModel.setup_buffers();
+                blackQueenModel.setup_buffers();
+                boardModel.setup_buffers(); },
             .loop                     = [&]() {
                 glClearColor(0.847f, 0.82f, 0.929f, 1.f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glEnable(GL_DEPTH_TEST);
-            
+
                 glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(window_width) / static_cast<float>(window_height), 0.1f, 100.0f);
-            
-                // PLATEAU
+
+                // Set common shader uniforms
                 shader.use();
-                glm::mat4 model_matrix = glm::mat4(1.0f);
-                model_matrix = glm::scale(model_matrix, glm::vec3(0.2f, 0.2f, 0.2f));
-                shader.set_uniform_matrix_4fv("model", model_matrix); //c'est la matrice model qui fait le deplacement scale et rotate
                 shader.set_uniform_matrix_4fv("view", camera.get_view_matrix());
                 shader.set_uniform_matrix_4fv("projection", projection);
-            
                 shader.set_uniform_3fv("lightPos", glm::vec3(5.0f, 5.0f, 5.0f));
                 shader.set_uniform_3fv("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
                 shader.set_uniform_3fv("viewPos", camera.get_position());
-            
-                modelPlateau.render(shader);
 
-                // PIONS BLANCS
-                shader.use();
-                glm::mat4 model_matrix2 = glm::mat4(1.0f);
-                model_matrix2 = glm::scale(model_matrix2, glm::vec3(0.2f, 0.2f, 0.2f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix2); //c'est la matrice model qui fait le deplacement scale et rotate
-            
-                modelPion.render(shader);
+                // Render the board
+                glm::mat4 basePosition = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f));
+                renderModel(shader, boardModel, basePosition);
 
-                // pion 2
-                shader.use();
-                glm::mat4 model_matrix3 = glm::mat4(1.0f);
-                model_matrix3 = glm::scale(model_matrix3, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix3, glm::vec3(0.0f, 0.0f, -6.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix3);
+                // Render white pawns
+                for (int i = 0; i < 8; ++i) {
+                    glm::mat4 transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f * i));
+                    renderModel(shader, whitePawnModel, transform);
+                }
 
-                modelPion.render(shader);
+                // Render black pawns
+                for (int i = 0; i < 8; ++i) {
+                    glm::mat4 transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                        glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f * i));
+                    renderModel(shader, blackPawnModel, transform);
+                }
 
-                // pion 3
-                shader.use();
-                glm::mat4 model_matrix4 = glm::mat4(1.0f);
-                model_matrix4 = glm::scale(model_matrix4, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix4, glm::vec3(0.0f, 0.0f, -12.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix4);
-                
-                modelPion.render(shader);
-
-                // pion 4
-                shader.use();
-                glm::mat4 model_matrix5 = glm::mat4(1.0f);
-                model_matrix5 = glm::scale(model_matrix5, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix5, glm::vec3(0.0f, 0.0f, -18.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix5);
-                                
-                modelPion.render(shader);
-
-                // pion 5
-                shader.use();
-                glm::mat4 model_matrix6 = glm::mat4(1.0f);
-                model_matrix6 = glm::scale(model_matrix6, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix6, glm::vec3(0.0f, 0.0f, -24.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix6);
-                                
-                modelPion.render(shader);
-
-                // pion 6
-                shader.use();
-                glm::mat4 model_matrix7 = glm::mat4(1.0f);
-                model_matrix7 = glm::scale(model_matrix7, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix7, glm::vec3(0.0f, 0.0f, -30.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix7);
-                                
-                modelPion.render(shader);
-
-                // pion 7
-                shader.use();
-                glm::mat4 model_matrix8 = glm::mat4(1.0f);
-                model_matrix8 = glm::scale(model_matrix8, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix8, glm::vec3(0.0f, 0.0f, -36.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix8);
-                                
-                modelPion.render(shader);
-
-                // pion 8
-                shader.use();
-                glm::mat4 model_matrix9 = glm::mat4(1.0f);
-                model_matrix9 = glm::scale(model_matrix9, glm::vec3(0.2f, 0.2f, 0.2f)) * glm::translate(model_matrix9, glm::vec3(0.0f, 0.0f, -42.0f)) ; // * glm::translate(model_matrix2, glm::vec3(0.0f, 0.0f, -6.0f))    ceci deplace le pion d'une case vers la gauche
-                shader.set_uniform_matrix_4fv("model", model_matrix9);
-                                
-                modelPion.render(shader);
-
-                //PIONS NOIRS
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix2);                            // c'est la matrice model qui fait le deplacement scale et rotate
-
-                modelPion2.render(shader);
-
-                // pion 2
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix3);
-
-                modelPion2.render(shader);
-
-                // pion 3
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix4);
-
-                modelPion2.render(shader);
-
-                // pion 4
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix5);
-
-                modelPion2.render(shader);
-
-                // pion 5
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix6);
-
-                modelPion2.render(shader);
-
-                // pion 6
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix7);
-
-                modelPion2.render(shader);
-
-                // pion 7
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix8);
-
-                modelPion2.render(shader);
-
-                // pion 8
-                shader.use();
-                shader.set_uniform_matrix_4fv("model", model_matrix9);
-
-                modelPion2.render(shader);
-            
+                renderModel(shader, whiteRookModel, basePosition);
+                renderModel(shader, whiteRookModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -42.0f))); 
+                renderModel(shader, blackRookModel, basePosition);
+                renderModel(shader, blackRookModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -42.0f))); 
+                renderModel(shader, whiteKnightModel, basePosition);
+                renderModel(shader, whiteKnightModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f)));
+                renderModel(shader, blackKnightModel, basePosition);
+                renderModel(shader, blackKnightModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -30.0f))); 
+                renderModel(shader, whiteBishopModel, basePosition);
+                renderModel(shader, whiteBishopModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -18.0f))); 
+                renderModel(shader, blackBishopModel, basePosition);
+                renderModel(shader, blackBishopModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -18.0f))); 
+                renderModel(shader, whiteQueenModel, basePosition);
+                renderModel(shader, blackQueenModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 6.0f))); 
+                renderModel(shader, whiteKingModel, basePosition);
+                renderModel(shader, blackKingModel, glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f)) *
+                                                    glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -6.0f)));
+                // ImGui interface
                 ImGui::ShowDemoWindow();
-            
                 ImGui::Begin("Plateau");
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
-            
                 board.drawBoard();
                 board.checkGameOver();
-            
                 ImGui::PopStyleVar();
                 ImGui::End(); },
-            .key_callback             = [&](int key, int scancode, int action, int mods) { std::cout << "Key: " << key << " Scancode: " << scancode << " Action: " << action << " Mods: " << mods << '\n'; },
-            .mouse_button_callback    = [&](int button, int action, int mods) { std::cout << "Button: " << button << " Action: " << action << " Mods: " << mods << '\n'; },
-            .cursor_position_callback = [&](double xpos, double ypos) { camera.track_ball_move_callback(xpos, ypos); },
-            .scroll_callback          = [&](double xoffset, double yoffset) { camera.process_scroll(yoffset); },
+            .key_callback             = [&](int key, int scancode, int action, int mods) {
+                    bool isPressed = (action != 0); 
+                    handleKeyEvent(key, isPressed);
+                    std::cout << "Key: " << key << " Scancode: " << scancode << " Action: " << action << " Mods: " << mods << '\n'; },
+            .cursor_position_callback = [&](double xpos, double ypos) {
+                    if (isCKeyPressed) { 
+                        camera.track_ball_move_callback(xpos, ypos);
+                    } },
+            .scroll_callback          = [&](double xoffset, double yoffset) {
+                    if (isCKeyPressed) { 
+                        camera.process_scroll(yoffset);
+                    } },
             .window_size_callback     = [&](int width, int height) { std::cout << "Resized: " << width << ' ' << height << '\n'; },
         }
     );
