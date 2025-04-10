@@ -42,7 +42,6 @@ int main()
                 std::cout << "Init\n";
                 shader.load_shader("model.vs.glsl", "model.fs.glsl");
             
-                // Initialiser le plateau et ses pièces
                 board.initializeBoard3D("board/board.obj", "board"); },
             .loop                     = [&]() {
                 glClearColor(0.847f, 0.82f, 0.929f, 1.f);
@@ -55,8 +54,21 @@ int main()
                 shader.use();
                 shader.set_uniform_matrix_4fv("view", camera.get_view_matrix());
                 shader.set_uniform_matrix_4fv("projection", projection);
-                shader.set_uniform_3fv("lightPos", glm::vec3(5.0f, 5.0f, 5.0f));
-                shader.set_uniform_3fv("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+
+                if (board.tour_actuel == Color::blanc) {
+                    // Éclairage pour le tour des blancs: lumière chaude venant d'en haut à droite
+                    shader.set_uniform_3fv("lightPos", glm::vec3(5.0f, 5.0f, 5.0f));
+                    shader.set_uniform_3fv("lightColor", glm::vec3(1.0f, 0.9f, 0.7f)); // Teinte dorée chaude
+                    shader.set_uniform_1f("ambientFactor", 0.3f); // Ambiance plus lumineuse
+                } 
+                else {
+                    // Éclairage pour le tour des noirs: lumière froide venant d'en bas à gauche
+                    shader.set_uniform_3fv("lightPos", glm::vec3(-5.0f, 3.0f, -3.0f));
+                    shader.set_uniform_3fv("lightColor", glm::vec3(0.7f, 0.8f, 1.0f)); // Teinte bleue froide
+                    shader.set_uniform_1f("ambientFactor", 0.15f); // Ambiance plus sombre
+                }
+
                 shader.set_uniform_3fv("viewPos", camera.get_position());
 
 

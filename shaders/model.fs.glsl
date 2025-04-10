@@ -14,6 +14,7 @@ uniform vec3 Kd;
 uniform vec3 Ka;
 uniform vec3 Ks;
 uniform float Ns;
+uniform float ambientFactor; // Facteur pour ajuster l'intensité ambiante selon le tour
 
 uniform bool useTexture;
 uniform sampler2D map_Kd;
@@ -22,8 +23,8 @@ void main() {
 
     vec3 diffuseColor = useTexture ? texture(map_Kd, TexCoords).rgb : Kd;
 
-    // Ambient
-    vec3 ambient = Ka * (lightColor * 0.25);
+    // Ambient - avec facteur variable selon le tour
+    vec3 ambient = Ka * (lightColor * ambientFactor);
 
     // Diffuse
     vec3 L = normalize(lightPos - FragPos);
