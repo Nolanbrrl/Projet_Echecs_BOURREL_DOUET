@@ -47,8 +47,8 @@ void Camera::process_scroll(double yoffset)
     _radius -= yoffset * 0.1f;
     if (_radius < 1.0f)
         _radius = 1.0f;
-    if (_radius > 32.0f)
-        _radius = 32.0f;
+    if (_radius > 70.0f)
+        _radius = 70.0f;
 }
 
 void Camera::process_input(int key, int action)
