@@ -1,5 +1,17 @@
 #include "Reine.hpp"
+#include <imgui.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 #include "Board.hpp"
+#include "Camera.hpp"
+#include "Model3D.hpp"
+#include "Shader.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/fwd.hpp"
+#include "quick_imgui/quick_imgui.hpp"
 #include "utils.hpp"
 
 static void move();
@@ -56,4 +68,22 @@ std::vector<Position> Reine::list_all_possible_moves(Board const& board, Positio
     }
 
     return possible_moves;
+}
+
+void Reine::draw3D(Color color)
+{
+    if (color == Color::noir)
+    {
+        queenModel.load_mesh(path_noir, name);
+    }
+    else
+    {
+        queenModel.load_mesh(path_blanc, name);
+    }
+    queenModel.setup_buffers();
+}
+
+void Reine::render3D(glmax::Shader& shader)
+{
+    queenModel.render(shader);
 }

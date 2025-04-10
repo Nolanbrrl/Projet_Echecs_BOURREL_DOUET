@@ -248,3 +248,81 @@ void Board::drawBoard()
     }
     gerer_promotion();
 }
+
+void Board::initializeBoard3D(const std::string& meshPath, const std::string& meshName)
+{
+    path = meshPath;
+    name = meshName;
+
+    // Initialiser le modèle du plateau
+    board3D.load_mesh(path, name);
+    board3D.setup_buffers();
+
+    // Initialiser toutes les pièces 3D
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (pieceMap[i][j] != nullptr)
+            {
+                std::string pieceType;
+                std::string colorSuffix = (pieceMap[i][j]->getColor() == Color::noir) ? "2" : "";
+
+                // Déterminer le type de pièce
+                if (pieceMap[i][j]->label() == "P")
+                    pieceType = "pawn/pawn";
+                else if (pieceMap[i][j]->label() == "T")
+                    pieceType = "rook/tower";
+                else if (pieceMap[i][j]->label() == "C")
+                    pieceType = "knight/cavalier";
+                else if (pieceMap[i][j]->label() == "F")
+                    pieceType = "bishop/fou";
+                else if (pieceMap[i][j]->label() == "Q")
+                    pieceType = "queen/queen";
+                else if (pieceMap[i][j]->label() == "K")
+                    pieceType = "king/king";
+
+                // Charger le modèle approprié
+                pieceMap[i][j]->model3D.load_mesh(pieceType + colorSuffix + ".obj", pieceType.substr(0, pieceType.find("/")));
+                pieceMap[i][j]->model3D.setup_buffers();
+            }
+        }
+    }
+}
+
+void Board::render3D(glmax::Shader& shader)
+{
+    // Dessiner le plateau avec une échelle réduite si nécessaire
+    shader.use();
+    glm::mat4 boardTransform = glm::mat4(1.0f);
+    // Ajustez cette valeur si le plateau est trop grand
+    boardTransform = glm::scale(boardTransform, glm::vec3(0.9f, 0.9f, 0.9f));
+    shader.set_uniform_matrix_4fv("model", boardTransform);
+    board3D.render(shader);
+}
+
+void Board::render_pieces3D(glmax::Shader& shader)
+{
+    // Augmenter l'échelle des pièces à 0.3
+    float scale      = 0.9f; // Échelle des modèles augmentée
+    float squareSize = 6.0f; // Taille d'une case en unités 3D
+
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (pieceMap[i][j] != nullptr)
+            {
+                // Calculer la position 3D
+                glm::mat4 transform = glm::mat4(1.0f);
+                // Ajuster la position en fonction de l'échelle du plateau
+                transform = glm::translate(transform, glm::vec3(j * squareSize - 21.0f, 0.0f, i * squareSize - 21.0f));
+                transform = glm::scale(transform, glm::vec3(scale, scale, scale));
+
+                // Appliquer la transformation et rendre la pièce
+                shader.set_uniform_matrix_4fv("model", transform);
+                pieceMap[i][j]->model3D.render(shader);
+            }
+        }
+    }
+}

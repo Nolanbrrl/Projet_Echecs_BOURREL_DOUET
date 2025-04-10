@@ -1,5 +1,11 @@
 #include "Tour.hpp"
+#include <imgui.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 #include "Board.hpp"
+#include "quick_imgui/quick_imgui.hpp"
 #include "utils.hpp"
 
 static void move();
@@ -56,4 +62,22 @@ std::vector<Position> Tour::list_all_possible_moves(Board const& board, Position
     }
 
     return possible_moves;
+}
+
+void Tour::draw3D(Color color)
+{
+    if (color == Color::blanc)
+    {
+        rookModel.load_mesh(path_blanc, name);
+    }
+    else
+    {
+        rookModel.load_mesh(path_noir, name);
+    }
+    rookModel.setup_buffers();
+}
+
+void Tour::render3D(glmax::Shader& shader)
+{
+    rookModel.render(shader);
 }

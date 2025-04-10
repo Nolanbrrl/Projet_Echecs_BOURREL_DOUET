@@ -1,7 +1,15 @@
 #include "Cavalier.hpp"
-#include <utility>
+#include <imgui.h>
+#include <glm/glm.hpp>
+#include <iostream>
 #include "Board.hpp"
-#include "Piece.hpp"
+#include "Camera.hpp"
+#include "Model3D.hpp"
+#include "Shader.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/fwd.hpp"
+#include "quick_imgui/quick_imgui.hpp"
 #include "utils.hpp"
 
 static void move();
@@ -47,3 +55,21 @@ std::vector<Position> Cavalier::list_all_possible_moves(Board const& board, Posi
 
     return possible_moves;
 };
+
+void Cavalier::draw3D(Color color)
+{
+    if (color == Color::blanc)
+    {
+        knightModel.load_mesh(path_blanc, name);
+    }
+    else
+    {
+        knightModel.load_mesh(path_noir, name);
+    }
+    knightModel.setup_buffers();
+}
+
+void Cavalier::render3D(glmax::Shader& shader)
+{
+    knightModel.render(shader);
+}

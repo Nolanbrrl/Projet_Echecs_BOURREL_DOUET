@@ -82,3 +82,21 @@ std::vector<Position> Pion::list_all_possible_moves(Board const& board, Position
 
     return possible_moves;
 }
+
+void Pion::draw3D(Color color)
+{
+    if (color == Color::blanc)
+    {
+        pawnModel.load_mesh(path_blanc, name);
+    }
+    else
+    {
+        pawnModel.load_mesh(path_noir, name);
+    }
+    pawnModel.setup_buffers();
+}
+
+void Pion::render3D(glmax::Shader& shader)
+{
+    pawnModel.render(shader);
+}

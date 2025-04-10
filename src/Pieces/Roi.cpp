@@ -1,5 +1,11 @@
 #include "Roi.hpp"
+#include <imgui.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 #include "Board.hpp"
+#include "quick_imgui/quick_imgui.hpp"
 #include "utils.hpp"
 
 static void move();
@@ -70,3 +76,21 @@ std::vector<Position> Roi::list_all_possible_moves(Board const& board, Position 
     }
     return possible_moves;
 };
+
+void Roi::draw3D(Color color)
+{
+    if (color == Color::blanc)
+    {
+        kingModel.load_mesh(path_blanc, name);
+    }
+    else
+    {
+        kingModel.load_mesh(path_noir, name);
+    }
+    kingModel.setup_buffers();
+}
+
+void Roi::render3D(glmax::Shader& shader)
+{
+    kingModel.render(shader);
+}

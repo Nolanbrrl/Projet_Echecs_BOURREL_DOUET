@@ -5,7 +5,9 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+#include <string>
 #include <unordered_map>
+#include "Model3D.hpp"
 #include "Pieces/Piece.hpp"
 
 class Board {
@@ -36,4 +38,10 @@ public:
     void                                                 resetBoard();
     Color                                                tour_actuel = Color::blanc;
     std::optional<Position>                              pion_pour_prise_en_passant;
+    Model3D                                              board3D;
+    std::string                                          path = "../../assets/models/board/board.obj";
+    std::string                                          name = "board";
+    void                                                 render3D(glmax::Shader& shader);
+    void                                                 render_pieces3D(glmax::Shader& shader);
+    void                                                 initializeBoard3D(const std::string& meshPath, const std::string& meshName);
 };
