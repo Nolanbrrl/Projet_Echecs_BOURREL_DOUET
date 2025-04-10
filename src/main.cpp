@@ -78,7 +78,7 @@ int main()
                 if (board.tour_actuel == Color::blanc) {
                     // Lumière fixe pour le tour des blancs: lumière chaude venant d'en haut à droite
                     shader.set_uniform_3fv("lightPos1", glm::vec3(5.0f, 5.0f, 5.0f));
-                    shader.set_uniform_3fv("lightColor1", glm::vec3(1.0f, 0.851f, 0.0f)); // Teinte dorée chaude
+                    shader.set_uniform_3fv("lightColor1", glm::vec3(1.0f, 0.851f, 0.0f)); // Teinte rose
                     
                     // Lumière mobile secondaire (bleutée plus douce)
                     shader.set_uniform_3fv("lightPos2", mobileLight_pos);
