@@ -75,22 +75,22 @@ int main()
                 if (board.tour_actuel == Color::blanc) {
                     // Lumière fixe pour le tour des blancs: lumière chaude venant d'en haut à droite
                     shader.set_uniform_3fv("lightPos1", glm::vec3(5.0f, 5.0f, 5.0f));
-                    shader.set_uniform_3fv("lightColor1", glm::vec3(1.0f, 0.9f, 0.7f)); // Teinte dorée chaude
+                    shader.set_uniform_3fv("lightColor1", glm::vec3(1.0f, 0.851f, 0.0f)); // Teinte dorée chaude
                     
                     // Lumière mobile secondaire (bleutée plus douce)
                     shader.set_uniform_3fv("lightPos2", mobileLight_pos);
-                    shader.set_uniform_3fv("lightColor2", glm::vec3(0.6f, 0.6f, 1.0f));
+                    shader.set_uniform_3fv("lightColor2", glm::vec3(1.0f, 0.106f, 0.553f)); //Teinte jaune
                     
                     shader.set_uniform_1f("ambientFactor", 0.2f); // Ambiance plus lumineuse
                 } 
                 else {
                     // Lumière fixe pour le tour des noirs: lumière froide venant d'en bas à gauche
                     shader.set_uniform_3fv("lightPos1", glm::vec3(-5.0f, 3.0f, -3.0f));
-                    shader.set_uniform_3fv("lightColor1", glm::vec3(0.7f, 0.8f, 1.0f)); // Teinte bleue froide
+                    shader.set_uniform_3fv("lightColor1", glm::vec3(0.14f, 0.81f, 0.655f)); // Teinte bleue 
                     
                     // Lumière mobile secondaire (ambrée plus douce)
                     shader.set_uniform_3fv("lightPos2", mobileLight_pos);
-                    shader.set_uniform_3fv("lightColor2", glm::vec3(0.8f, 0.5f, 0.2f));
+                    shader.set_uniform_3fv("lightColor2", glm::vec3(0.302f, 0.29f, 0.796f)); // Teinte verte
                     
                     shader.set_uniform_1f("ambientFactor", 0.15f); // Ambiance plus sombre
                 }
