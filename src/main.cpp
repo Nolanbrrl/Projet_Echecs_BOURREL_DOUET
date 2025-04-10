@@ -3,7 +3,7 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include <iostream>
-#include <numbers> // For std::numbers::pi
+#include <numbers>
 #include "Board.hpp"
 #include "Camera.hpp"
 #include "Model3D.hpp"
@@ -37,7 +37,6 @@ int main()
     glmax::Camera camera{true};
     Board         board;
 
-    // Variables pour la lumière mobile
     float mobileLight_angle  = 0.0f;
     float mobileLight_height = 3.0f;
     float mobileLight_radius = 7.0f;
@@ -50,17 +49,21 @@ int main()
                 std::cout << "Init\n";
                 shader.load_shader("model.vs.glsl", "model.fs.glsl");
             
-                // Initialiser le plateau et ses pièces
+
                 board.initializeBoard3D("board/board.obj", "board"); },
             .loop                     = [&]() {
                 glClearColor(0.847f, 0.82f, 0.929f, 1.f);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 glEnable(GL_DEPTH_TEST);
 
-                // Mise à jour de la position de la lumière mobile
+                static float lastFrameTime = 0.0f;
+                float currentFrameTime = ImGui::GetTime();
+                float delta_time = currentFrameTime - lastFrameTime;
+                lastFrameTime = currentFrameTime;
+
+                mobileLight_angle += mobileLight_speed * delta_time;
                 if (mobileLight_angle > 2.0f * std::numbers::pi) mobileLight_angle -= 2.0f * std::numbers::pi;
                 
-                // Calculer la position de la lumière mobile qui tourne autour du plateau
                 float x = mobileLight_radius * cos(mobileLight_angle);
                 float z = mobileLight_radius * sin(mobileLight_angle);
                 glm::vec3 mobileLight_pos = glm::vec3(x, mobileLight_height, z);
