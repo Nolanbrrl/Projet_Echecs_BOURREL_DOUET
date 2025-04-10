@@ -1,5 +1,4 @@
 #include "Model3D.hpp"
-#include <iostream>
 
 void Model3D::load_mesh(const std::string& path, const std::string& name)
 {
@@ -8,7 +7,6 @@ void Model3D::load_mesh(const std::string& path, const std::string& name)
 
 void Model3D::setup_buffers()
 {
-    // Lier et configurer les buffers pour les pions (VBO, EBO)
     m_vbo.init();
     m_vbo.bind();
     m_vbo.set_data(m_mesh.get_vertices().data(), m_mesh.get_vertices().size() * sizeof(glmax::Vertex));
@@ -19,13 +17,11 @@ void Model3D::setup_buffers()
     m_ebo.set_data(m_mesh.get_indices().data(), m_mesh.get_indices().size() * sizeof(uint32_t));
     m_ebo.unbind();
 
-    // Lier les matrices d'instance aux attributs de vertex
     m_vao.init();
     m_vao.bind();
     m_vbo.bind();
     m_ebo.bind();
 
-    // Attributs de position, normal et texture pour chaque pièce
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glmax::Vertex), (const GLvoid*)offsetof(glmax::Vertex, m_position));
 
@@ -38,7 +34,6 @@ void Model3D::setup_buffers()
     m_vao.unbind();
 }
 
-// render mon mesh
 void Model3D::render(glmax::Shader& shader) const
 {
     m_vao.bind();
@@ -47,7 +42,6 @@ void Model3D::render(glmax::Shader& shader) const
     {
         const glmax::Material& material = m_mesh.get_materials().at(submesh.m_material_id);
 
-        // Configurer les uniformes pour les propriétés du matériau
         shader.set_uniform_3fv("Kd", material.m_Kd);
         shader.set_uniform_3fv("Ka", material.m_Ka);
         shader.set_uniform_3fv("Ks", material.m_Ks);
@@ -64,7 +58,6 @@ void Model3D::render(glmax::Shader& shader) const
             shader.set_uniform_1i("useTexture", false);
         }
 
-        // On dessine !
         glDrawElements(GL_TRIANGLES, submesh.m_index_count, GL_UNSIGNED_INT, (const GLvoid*)(submesh.m_index_offset * sizeof(uint32_t)));
 
         if (material.m_hasMapKd)

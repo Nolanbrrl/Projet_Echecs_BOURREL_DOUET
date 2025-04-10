@@ -1,5 +1,4 @@
 #include "Pion.hpp"
-#include <iostream>
 #include "Board.hpp"
 #include "Piece.hpp"
 #include "utils.hpp"

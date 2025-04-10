@@ -7,7 +7,6 @@
 #include "Model3D.hpp"
 #include "Shader.hpp"
 #include "glm/ext/matrix_clip_space.hpp"
-#include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
 #include "quick_imgui/quick_imgui.hpp"
 
@@ -53,7 +52,6 @@ int main()
                 glm::mat4 projection = glm::perspective(glm::radians(45.0f), 
                     static_cast<float>(window_width) / static_cast<float>(window_height), 0.1f, 100.0f);
 
-                // Set shader uniforms
                 shader.use();
                 shader.set_uniform_matrix_4fv("view", camera.get_view_matrix());
                 shader.set_uniform_matrix_4fv("projection", projection);
@@ -61,7 +59,7 @@ int main()
                 shader.set_uniform_3fv("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
                 shader.set_uniform_3fv("viewPos", camera.get_position());
 
-                // Rendre le plateau et les pièces
+
                 board.render3D(shader);
                 board.render_pieces3D(shader);
 

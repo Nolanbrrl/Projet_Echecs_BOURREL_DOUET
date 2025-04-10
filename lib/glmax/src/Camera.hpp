@@ -25,7 +25,7 @@ private:
 
 public:
     Camera(bool is_track_ball)
-        : _is_track_ball(is_track_ball){};
+        : _is_track_ball(is_track_ball) {};
 
     glm::mat4 get_view_matrix();
     glm::vec3 get_position() { return _position; };

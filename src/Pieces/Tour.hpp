@@ -4,9 +4,7 @@
 
 class Tour : public Piece {
 public:
-    // Tour() = default;
     Tour(Color color, std::string label);
-    // ~Tour() override = default;
     void        setLabel(std::string label);
     std::string getLabel();
     explicit Tour(Color color)

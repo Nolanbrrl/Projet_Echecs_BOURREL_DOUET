@@ -1,15 +1,9 @@
 #include "Fou.hpp"
 #include <imgui.h>
 #include <glm/glm.hpp>
-#include <iostream>
 #include "Board.hpp"
-#include "Camera.hpp"
 #include "Model3D.hpp"
 #include "Shader.hpp"
-#include "glm/ext/matrix_clip_space.hpp"
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/fwd.hpp"
-#include "quick_imgui/quick_imgui.hpp"
 #include "utils.hpp"
 
 static void move();

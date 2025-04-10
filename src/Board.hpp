@@ -2,11 +2,9 @@
 #include <imgui.h>
 #include <winscard.h>
 #include <array>
-#include <iostream>
 #include <memory>
 #include <optional>
 #include <string>
-#include <unordered_map>
 #include "Model3D.hpp"
 #include "Pieces/Piece.hpp"
 
@@ -20,8 +18,6 @@ private:
 
 public:
     Board();
-
-    // void                                                 draw(int argc, char** argv);
     void                                                 initializeBoard();
     void                                                 drawBoard();
     void                                                 drawPieces();
